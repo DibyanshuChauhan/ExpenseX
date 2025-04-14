@@ -1,4 +1,3 @@
-````markdown
 # 💸 ExpenseX – Expense Tracker Application
 
 ExpenseX is a feature-rich expense tracker application designed to help users manage monthly budgets, analyze expenses via visual charts, and export detailed reports. It includes user authentication, admin controls, feedback modals, and even a math challenge game for refreshing the user's mind.
