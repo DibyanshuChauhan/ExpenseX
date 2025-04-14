@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+.navbar-poppins{
+    font-family: 'Poppins';
+}
+
+.navbar-Inter{
+    font-family: 'Inter';
+}
