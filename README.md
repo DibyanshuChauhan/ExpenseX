@@ -1,6 +1,4 @@
 
-Absolutely! Here's your fully updated and complete `README.md` for **ExpenseX**, now including the detailed **🧪 Test Cases** section you requested:
-
 ---
 
 # 💸 Welcome to ExpenseX! 🎉
