@@ -7,19 +7,26 @@ This README provides an overview of the project, setup instructions, architectur
 ---
 
 ## Table of Contents
-
 - [Project Overview](#project-overview)
 - [Key Features](#key-features)
 - [Technologies Used](#technologies-used)
 - [Installation and Setup](#installation-and-setup)
+- [How to Use ExpenseX](#how-to-use-expensex)
+  - [New Users](#new-users)
+  - [Existing Users](#existing-users)
+  - [Default Admin](#default-admin)
+  - [Secondary Admin](#secondary-admin)
 - [Project Structure](#project-structure)
 - [Architecture](#architecture)
-- [Usage Guide](#usage-guide)
 - [Development Notes](#development-notes)
+- [Pros and Cons](#pros-and-cons)
+- [Screenshots](#screenshots)
+- [Test Cases](#test-cases)
 - [Future Improvements](#future-improvements)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
+- [ExpenseX Questions and Answers](#expensex-questions-and-answers)
 
 ---
 
@@ -48,7 +55,7 @@ The application is built as a prototype, leveraging localStorage for data storag
 
 ## Technologies Used
 
-- **Frontend**: React (v18.x)
+- **Frontend**: React (v19)
 - **Styling**: Tailwind CSS
 - **Animations**: Framer Motion
 - **Data Visualization**: Chart.js, react-chartjs-2
@@ -114,6 +121,172 @@ The application is built as a prototype, leveraging localStorage for data storag
 
 - The app uses localStorage, so data persists in the browser. Clearing localStorage will reset all data.
 - No backend server is required for this prototype.
+
+---
+
+## How to Use ExpenseX
+
+ExpenseX is designed for various user types: new users, existing users, the default admin, and secondary admins. Below are tailored instructions to help each user type effectively use the application. All data is stored in your browser’s localStorage, so avoid clearing browser data to retain your expenses, budgets, and feedback.
+
+### New Users
+
+If you’re using ExpenseX for the first time, follow these steps to get started:
+
+1. **Access the App**:
+
+   - Open `http://localhost:5173` after completing the [Installation and Setup](#installation-and-setup).
+   - You’ll see the login screen.
+
+2. **Log In**:
+
+   - Use the default admin account: `username: admin`, `password: admin` (case-sensitive).
+   - Alternatively, ask an admin to create a user account for you via the Admin Panel (see [Default Admin](#default-admin)).
+
+3. **Explore the Dashboard**:
+
+   - After logging in, you’ll see the main dashboard with sections for adding expenses, setting a budget, and viewing charts.
+   - Start by adding an expense:
+     - In the **Expense Form**, enter an amount (e.g., `50`), select a category (e.g., `Food`), choose a date, add a description (e.g., `Lunch`), and click **Add Expense**.
+     - The expense appears in the **Expense List** below.
+
+4. **Set a Budget**:
+
+   - In the **Budget Input** section, enter a monthly budget (e.g., `1000`) and click **Set Budget**.
+   - The dashboard will show your remaining budget and total spent.
+
+5. **Try the Math Game**:
+
+   - Click **Play Quick Math Challenge** in the footer to open the game modal.
+   - Choose a difficulty (Easy, Medium, Hard) and question type (Math or Statement), then answer questions within the time limit.
+
+6. **Submit Feedback**:
+
+   - Click **Send Feedback** in the footer, enter your comments, and submit. Feedback is viewable by admins.
+
+7. **Next Steps**:
+   - Explore charts in the **Chart Section** to see spending trends.
+   - Download a report (weekly or monthly) via the **Report Download** section.
+   - Log out via the **Navbar** when done.
+
+**Tip**: Your data is saved in localStorage under your username (e.g., `expenses_username`). Avoid clearing browser data to keep your progress.
+
+### Existing Users
+
+If you’ve used ExpenseX before and have a user account, here’s how to continue managing your finances:
+
+1. **Log In**:
+
+   - Enter your username and password on the login screen.
+   - If you’ve forgotten your credentials, ask an admin to verify or reset them via the Admin Panel.
+
+2. **Manage Expenses**:
+
+   - **Add Expenses**: Use the **Expense Form** to log new expenses. Ensure all fields (amount, category, date, description) are filled to avoid errors.
+   - **View Expenses**: Check the **Expense List** to see your expense history, displayed as cards with category, date, and amount.
+   - **Reset Expenses**: Use the **Reset All Expenses** button (if available) to clear your expense data (note: this cannot be undone).
+
+3. **Monitor Budget**:
+
+   - Update your budget in the **Budget Input** section if your financial goals change.
+   - Track your **Remaining Budget** and **Total Spent** on the dashboard. If you overspend, the remaining budget shows `0` to avoid confusion.
+
+4. **Analyze Spending**:
+
+   - View the **Chart Section** for bar charts of spending trends (weekly or monthly).
+   - Check the **Summary Section** for a breakdown of spending by category (e.g., `Food: $150`).
+
+5. **Generate Reports**:
+
+   - Use the **Report Download** section to export a `.csv` file of your expenses (select weekly or monthly view).
+
+6. **Engage with the Game**:
+
+   - Play the math game via the footer to earn points and improve numerical skills.
+   - Use the calculator feature (costs 10 points) for complex questions, but note the 30-second time limit.
+
+7. **Provide Feedback**:
+
+   - Submit feedback via the footer to suggest improvements or report issues. Include details to help admins address your input.
+
+8. **Log Out**:
+   - Click **Logout** in the **Navbar** to secure your session, especially on shared devices.
+
+**Tip**: Sync issues across browser tabs are handled automatically (via `storage` events in `Footer.jsx`). Ensure your browser supports localStorage.
+
+### Default Admin
+
+The default admin (`username: admin`) has elevated privileges to manage users and feedback. Here’s how to use these features:
+
+1. **Log In**:
+
+   - Use `username: admin`, `password: admin` on the login screen.
+   - This account is pre-configured in localStorage and cannot be deleted.
+
+2. **Access the Admin Panel**:
+
+   - Click **Admin Panel** in the **Navbar** to open the admin interface.
+   - The panel includes sections for **User Management** and **Feedback Management**.
+
+3. **Manage Users**:
+
+   - **Create Users**: In the **User Management** section, enter a username, password, and select whether the user is an admin (secondary admin) or regular user. Click **Create User** to add them to localStorage.
+   - **Delete Users**: Select a user from the list and click **Delete**. Only the default admin can delete users, ensuring security.
+   - **View User Expenses**: Check the **All Users** section to see expenses for each user, stored as `expenses_${username}` in localStorage.
+
+4. **Manage Feedback**:
+
+   - In the **Feedback Management** section, view all feedback submitted by users (stored as `adminFeedbacks` in localStorage).
+   - **Filter Feedback**: Enter a username or keyword to filter feedback for quick review.
+   - **Delete Feedback**: Click **Delete** next to a feedback entry to remove it, or use **Delete All Feedbacks** (with confirmation) to clear all feedback.
+   - Only the default admin can delete feedback, preventing unauthorized actions.
+
+5. **Use Regular Features**:
+
+   - The default admin can also track expenses, set budgets, view charts, download reports, play the game, and submit feedback like regular users (see [Existing Users](#existing-users)).
+
+6. **Best Practices**:
+   - Regularly review feedback to identify user issues or feature requests.
+   - Avoid creating too many users, as localStorage has a 5-10 MB limit.
+   - Log out after admin tasks to prevent unauthorized access.
+
+**Tip**: The default admin’s privileges (e.g., deleting users) are enforced client-side (`isDefaultAdmin` in `AdminPanel.jsx`). For production, add server-side validation.
+
+### Secondary Admin
+
+Secondary admins are users created with admin privileges but lack the default admin’s full control. Here’s how to use the app as a secondary admin:
+
+1. **Log In**:
+
+   - Use the username and password assigned by the default admin during user creation.
+   - If you don’t have an account, ask the default admin to create one with admin status.
+
+2. **Access the Admin Panel**:
+
+   - Click **Admin Panel** in the **Navbar** (visible only if `isAdmin` is true for your account).
+   - The panel shows **User Management** and **Feedback Management**, but some actions are restricted.
+
+3. **Limited User Management**:
+
+   - **View Users**: See the list of users and their expenses in the **All Users** section.
+   - **Create Users**: You can create new users (regular or secondary admin) if the form is enabled (depends on implementation).
+   - **Restricted Actions**: You cannot delete users, as this is reserved for the default admin (`isDefaultAdmin` check in `AdminPanel.jsx`).
+
+4. **Limited Feedback Management**:
+
+   - **View Feedback**: Browse all feedback in the **Feedback Management** section.
+   - **Filter Feedback**: Use the filter input to search by username or content.
+   - **Restricted Actions**: You cannot delete individual feedback or all feedback, as these actions require default admin privileges.
+
+5. **Use Regular Features**:
+
+   - Like regular users, you can track expenses, set budgets, view charts, download reports, play the game, and submit feedback (see [Existing Users](#existing-users)).
+
+6. **Best Practices**:
+   - Focus on monitoring user activity and feedback to support the default admin.
+   - Communicate with the default admin for actions requiring elevated privileges (e.g., deleting users).
+   - Log out after admin tasks to secure your session.
+
+**Tip**: Your admin status is stored in localStorage (`isAdmin: true`). Be cautious, as client-side checks can be bypassed in a prototype.
 
 ---
 
@@ -207,8 +380,6 @@ This architecture prioritizes modularity, reusability, and a polished user exper
 
 ---
 
-## Usage Guide
-
 ### For Users
 
 1. **Login**:
@@ -272,6 +443,24 @@ This architecture prioritizes modularity, reusability, and a polished user exper
 ---
 
 ## Pros and Cons
+
+
+## Screenshots
+
+- **Dashboard Overview**  
+  ![Dashboard Overview](./src/assets/User%20Dashboard.png)
+- **Expense List**  
+  ![Expense List](./src/assets/Add%20Expenses.png)
+- **Math Game Modal**  
+  ![Math Game Modal](./src/assets/Game%20Modal.png)
+- **Admin Panel**  
+  ![Admin Panel](./src/assets/Admin%20Dashboard.png)
+  ![Admin Panel](./src/assets/Admin%20Dashboard-2.png)
+- **Feedback Modal**  
+  ![Feedback Modal](./src/assets/Feedback%20Modal.png)
+
+---
+
 
 Below is an analysis of the strengths and weaknesses of the ExpenseX application, highlighting its capabilities and limitations.
 
