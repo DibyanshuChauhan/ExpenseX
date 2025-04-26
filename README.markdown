@@ -295,7 +295,7 @@ Secondary admins are users created with admin privileges but lack the default ad
 The project follows a modular structure with components organized by feature:
 
 ```
-your-project-name/
+expensex/
 ├── public/
 │   └── index.html
 ├── src/
@@ -442,8 +442,6 @@ This architecture prioritizes modularity, reusability, and a polished user exper
 
 ---
 
-## Pros and Cons
-
 
 ## Screenshots
 
@@ -461,6 +459,8 @@ This architecture prioritizes modularity, reusability, and a polished user exper
 
 ---
 
+
+## Pros and Cons
 
 Below is an analysis of the strengths and weaknesses of the ExpenseX application, highlighting its capabilities and limitations.
 
@@ -492,23 +492,23 @@ Below is an analysis of the strengths and weaknesses of the ExpenseX application
 
 | **Test Scenario**                                                        | **Expected Outcome**                                                                                     |
 | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| 🔐 **Login with incorrect credentials**                                  | User receives an error toast notification: `"Invalid credentials"` and stays on the login screen.        |
-| 🔐 **Login with correct credentials**                                    | User is redirected to the main **Expense Dashboard** with a success message.                             |
-| 💰 **Enter a negative value in the Monthly Budget field**                | Validation error displayed: `"Budget must be a positive number"` and the value is not accepted.          |
-| 💸 **Enter a negative value in the Amount field (while adding expense)** | Validation error displayed: `"Amount must be a positive number"` and the value is not added to the list. |
-| ➕ **Click "Add Expense" with valid inputs**                             | Expense is added successfully and reflected in the **Expense List** and **Summary Section** updates.     |
-| ♻️ **Click "Reset All Expenses"**                                        | All expense data is cleared from the current session, and summary values are reset to default.           |
-| 📥 **Click "Download Monthly Report"**                                   | A `.csv` file is generated and downloaded containing all monthly expense records.                        |
-| 📥 **Click "Download Weekly Report"**                                    | A `.csv` file is generated and downloaded containing all weekly expense records.                         |
-| ⚙️ **Click "Features" button in Footer**                                 | A modal appears listing all major features of the app.                                                   |
-| 📬 **Click "Contact Us" button in Footer**                               | A modal form opens where users can view the developer's name, email and other information .              |
-| 📝 **Click "Feedback" button in Footer**                                 | A feedback form modal is triggered allowing users to share views suggestions or bugs.                    |
-| 🎮 **Click "Play Quick Math Challenge" in Footer**                       | A modal appears where users can select difficulty level and question format to start the mini-game.      |
-| 🔗 **Click any hyperlink in the Footer**                                 | User is redirected to the relevant section or external link in a new tab (if applicable).                |
-| 🚪 **Click "Logout" button in Navbar**                                   | User is logged out and redirected to the login screen. Local/session data is cleared.                    |
-| 🛠️ **Click "Admin Panel" button in Navbar**                              | Navigates to the Admin Panel section with user and feedback management options.                          |
-| ➕ **Click "Create User" inside Admin Panel**                            | A form appears where new user details can be submitted and saved to local storage.                       |
-| 💬 **Click "Feedback Management" inside Admin Panel**                    | Displays a list of submitted feedbacks with delete options for each.                                     |
+|  **Login with incorrect credentials**                                  | User receives an error toast notification: `"Invalid credentials"` and stays on the login screen.        |
+|  **Login with correct credentials**                                    | User is redirected to the main **Expense Dashboard** with a success message.                             |
+|  **Enter a negative value in the Monthly Budget field**                | Validation error displayed: `"Budget must be a positive number"` and the value is not accepted.          |
+|  **Enter a negative value in the Amount field (while adding expense)** | Validation error displayed: `"Amount must be a positive number"` and the value is not added to the list. |
+|  **Click "Add Expense" with valid inputs**                             | Expense is added successfully and reflected in the **Expense List** and **Summary Section** updates.     |
+|  **Click "Reset All Expenses"**                                        | All expense data is cleared from the current session, and summary values are reset to default.           |
+|  **Click "Download Monthly Report"**                                   | A `.csv` file is generated and downloaded containing all monthly expense records.                        |
+|  **Click "Download Weekly Report"**                                    | A `.csv` file is generated and downloaded containing all weekly expense records.                         |
+|  **Click "Features" button in Footer**                                 | A modal appears listing all major features of the app.                                                   |
+|  **Click "Contact Us" button in Footer**                               | A modal form opens where users can view the developer's name, email and other information .              |
+|  **Click "Feedback" button in Footer**                                 | A feedback form modal is triggered allowing users to share views suggestions or bugs.                    |
+|  **Click "Play Quick Math Challenge" in Footer**                       | A modal appears where users can select difficulty level and question format to start the mini-game.      |
+|  **Click any hyperlink in the Footer**                                 | User is redirected to the relevant section or external link in a new tab (if applicable).                |
+|  **Click "Logout" button in Navbar**                                   | User is logged out and redirected to the login screen. Local/session data is cleared.                    |
+|  **Click "Admin Panel" button in Navbar**                              | Navigates to the Admin Panel section with user and feedback management options.                          |
+|  **Click "Create User" inside Admin Panel**                            | A form appears where new user details can be submitted and saved to local storage.                       |
+|  **Click "Feedback Management" inside Admin Panel**                    | Displays a list of submitted feedbacks with delete options for each.                                     |
 
 ---
 
