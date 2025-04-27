@@ -550,11 +550,11 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 For questions, feedback, or support:
 
-- **Developer**: [Your Name]
-- **Email**: [your.email@example.com]
-- **Social Media**: [LinkedIn](#), [Twitter/X](#), [Instagram](#)
+- **Developer**: Dibyanshu Chauhan
+- **Email**: cdivyanshu98@gmail.com
+- **Social Media**: [LinkedIn](https://www.linkedin.com/in/divyanshu011/), [Twitter/X](https://x.com/divyanshC01), [Instagram](https://www.instagram.com/devyanshu__011/)
 
-For project-related inquiries, open an issue on the [GitHub repository](https://github.com/your-username/expensex).
+For project-related inquiries, open an issue on the [GitHub repository](https://github.com/DibyanshuChauhan/ExpenseX).
 
 ---
 
