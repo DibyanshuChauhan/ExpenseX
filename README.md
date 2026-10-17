@@ -2,7 +2,8 @@
 
 <div align="center">
 
-![ExpenseX Banner](https://img.shields.io/badge/ExpenseX-Fintech%20Intelligence-6366f1?style=for-the-badge&logo=cashapp&logoColor=white)
+![ExpenseX Banner](https://img.shields.io/badge/ExpenseX-Fintech%20Intelligence-6366f1?style=for-the-badge&logo=cashapp&logoColor=white)  
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Render_Online-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://expensex-jrcw.onrender.com/)
 
 [![React 19](https://img.shields.io/badge/React-19.0.0-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4.0-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
@@ -16,7 +17,9 @@
 
 **A high-performance, full-stack personal finance and wealth management dashboard designed for effortless expense tracking, budget allocation analytics, and real-time financial health monitoring.**
 
-[Explore Features](#-platform-capabilities) • [Why ExpenseX?](#-why-is-expensex-essential-for-any-individual) • [The Percentage Math](#-the-core-mathematics-category-allocation--percentage-breakdown) • [Offline Installation](#-quickstart-offline--local-machine-setup) • [Architecture](#-project-architecture)
+🌐 **Live URL:** [https://expensex-jrcw.onrender.com/](https://expensex-jrcw.onrender.com/)
+
+[Live Demo](https://expensex-jrcw.onrender.com/) • [Explore Features](#-platform-capabilities) • [Why ExpenseX?](#-why-is-expensex-essential-for-any-individual) • [The Percentage Math](#-the-core-mathematics-category-allocation--percentage-breakdown) • [Offline Installation](#-quickstart-offline--local-machine-setup) • [Architecture](#-project-architecture)
 
 </div>
 
