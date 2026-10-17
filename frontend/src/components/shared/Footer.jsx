@@ -179,7 +179,7 @@ const Footer = ({ currentUser: propUser }) => {
                                     <FaLinkedin size={18} />
                                 </a>
                                 <a
-                                    href="https://x.com/divyanshC01"
+                                    href="https://x.com/cdivyanshu98"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-500/40 hover:scale-105 transition-all shadow-sm"
