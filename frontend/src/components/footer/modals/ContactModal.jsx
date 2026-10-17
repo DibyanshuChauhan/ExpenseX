@@ -27,20 +27,20 @@ const ContactModal = ({ show, onClose }) => {
                 >
                     <button
                         onClick={onClose}
-                        className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+                        className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 transition-all"
                     >
                         <FiX size={18} />
                     </button>
 
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                        <div className="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
                             <FiUser size={20} />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-white tracking-tight">
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
                                 Developer & Creator Profile
                             </h3>
-                            <p className="text-xs text-slate-400">
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
                                 Engineering background and contact channels
                             </p>
                         </div>
@@ -48,36 +48,36 @@ const ContactModal = ({ show, onClose }) => {
 
                     <div className="space-y-4 text-xs">
                         {/* Personal Details */}
-                        <div className="p-4 rounded-2xl bg-slate-900/60 border border-white/5">
-                            <div className="flex items-center gap-2 mb-2 text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
+                        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5">
+                            <div className="flex items-center gap-2 mb-2 text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
                                 <FiUser size={14} />
                                 <span>Personal Information</span>
                             </div>
-                            <p className="text-slate-300 leading-relaxed">
-                                <strong className="text-white">Dibyanshu Chauhan</strong> — Front-End Web Developer & Full-Stack Engineer based in India. Focused on performant modern web architectures and rich interactive UIs.
+                            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                                <strong className="text-slate-900 dark:text-white">Dibyanshu Chauhan</strong> — Front-End Web Developer & Full-Stack Engineer based in India. Focused on performant modern web architectures and rich interactive UIs.
                             </p>
                         </div>
 
                         {/* Education */}
-                        <div className="p-4 rounded-2xl bg-slate-900/60 border border-white/5">
-                            <div className="flex items-center gap-2 mb-2 text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
+                        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5">
+                            <div className="flex items-center gap-2 mb-2 text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
                                 <FiBookOpen size={14} />
                                 <span>Academic Background</span>
                             </div>
-                            <p className="text-slate-300 leading-relaxed">
-                                <strong className="text-white">B.Sc. in Information Technology</strong> (2022–2025)<br />
+                            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                                <strong className="text-slate-900 dark:text-white">B.Sc. in Information Technology</strong> (2022–2025)<br />
                                 Hemwati Nandan Bahuguna Garhwal University<br />
                                 Core Stack: React, Tailwind, JavaScript, Node.js, Express, MongoDB.
                             </p>
                         </div>
 
                         {/* Experience */}
-                        <div className="p-4 rounded-2xl bg-slate-900/60 border border-white/5">
-                            <div className="flex items-center gap-2 mb-2 text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
+                        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5">
+                            <div className="flex items-center gap-2 mb-2 text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
                                 <FiBriefcase size={14} />
                                 <span>Professional Highlights</span>
                             </div>
-                            <p className="text-slate-300 leading-relaxed">
+                            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                                 • Architected and developed ExpenseX full-stack finance tracker.<br />
                                 • 2+ years specialized web development crafting real-time, responsive applications.<br />
                                 • Deep focus on design systems, micro-animations, and UX optimization.
@@ -85,12 +85,12 @@ const ContactModal = ({ show, onClose }) => {
                         </div>
 
                         {/* Direct Channels & Social */}
-                        <div className="p-4 rounded-2xl bg-slate-900/60 border border-white/5">
-                            <div className="flex items-center gap-2 mb-3 text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
+                        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5">
+                            <div className="flex items-center gap-2 mb-3 text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
                                 <FiMail size={14} />
                                 <span>Direct Inquiries</span>
                             </div>
-                            <p className="text-slate-300 flex items-center gap-2 mb-3 font-mono">
+                            <p className="text-slate-600 dark:text-slate-300 flex items-center gap-2 mb-3 font-mono">
                                 <FaEnvelope className="text-slate-400" />
                                 <span>cdivyanshu98@gmail.com</span>
                             </p>
@@ -100,7 +100,7 @@ const ContactModal = ({ show, onClose }) => {
                                     href="https://www.linkedin.com/in/divyanshu011/"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-indigo-400 hover:bg-slate-700 transition-all"
+                                    className="p-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all"
                                 >
                                     <FaLinkedin size={16} />
                                 </a>
@@ -108,7 +108,7 @@ const ContactModal = ({ show, onClose }) => {
                                     href="https://x.com/cdivyanshu98"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-indigo-400 hover:bg-slate-700 transition-all"
+                                    className="p-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all"
                                 >
                                     <BsTwitterX size={15} />
                                 </a>
@@ -116,7 +116,7 @@ const ContactModal = ({ show, onClose }) => {
                                     href="https://www.instagram.com/devyanshu__011/"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-indigo-400 hover:bg-slate-700 transition-all"
+                                    className="p-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all"
                                 >
                                     <FaInstagram size={16} />
                                 </a>

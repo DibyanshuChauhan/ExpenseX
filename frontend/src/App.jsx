@@ -12,6 +12,7 @@ import Signup from "./components/authentication/Signup.jsx";
 import ChangePassword from "./components/authentication/ChangePassword.jsx";
 
 import { api } from "./services/api";
+import { useTheme } from "./context/ThemeContext";
 
 function App() {
   // ------------------------- STATES -------------------------
@@ -179,15 +180,15 @@ function App() {
     }
   };
 
-  // ------------------------- UI -------------------------
+  const { theme } = useTheme();
 
   return (
-    <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col font-['Plus_Jakarta_Sans',sans-serif]">
+    <div className="min-h-screen bg-slate-100/90 dark:bg-[#070b14] text-slate-900 dark:text-slate-100 flex flex-col font-['Plus_Jakarta_Sans',sans-serif] transition-colors duration-300">
       {/* ToastContainer for displaying popup messages (notifications) */}
       <ToastContainer
         position="top-right"
         autoClose={3000}
-        theme="dark"
+        theme={theme}
       />
 
       {/* Conditional Rendering: Based on isLoggedIn state */}

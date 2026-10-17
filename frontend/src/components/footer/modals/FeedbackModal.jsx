@@ -26,21 +26,21 @@ const SendFeedbackModal = ({ show, onClose, feedback, setFeedback, handleFeedbac
                     {/* Close button */}
                     <button
                         onClick={onClose}
-                        className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+                        className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 transition-all"
                     >
                         <FiX size={18} />
                     </button>
 
                     <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                        <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
                             <FiMessageSquare size={18} />
                         </div>
                         <div>
-                            <h3 className="text-lg font-bold text-white tracking-tight">
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
                                 Send Product Feedback
                             </h3>
-                            <p className="text-xs text-slate-400">
-                                Submitting as <span className="text-indigo-400 font-semibold">{currentUser?.username || "Guest"}</span>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                                Submitting as <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{currentUser?.username || "Guest"}</span>
                             </p>
                         </div>
                     </div>
@@ -50,7 +50,7 @@ const SendFeedbackModal = ({ show, onClose, feedback, setFeedback, handleFeedbac
                             value={feedback}
                             onChange={(e) => setFeedback(e.target.value)}
                             placeholder="Share suggestions, bugs, or feature requests with the administrator..."
-                            className="w-full p-4 bg-slate-900/80 text-white border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 resize-none placeholder-slate-500 text-xs leading-relaxed"
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-white border border-slate-300 dark:border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 resize-none placeholder-slate-400 dark:placeholder-slate-500 text-xs leading-relaxed transition-all"
                             rows="5"
                             required
                         />
@@ -59,7 +59,7 @@ const SendFeedbackModal = ({ show, onClose, feedback, setFeedback, handleFeedbac
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+                                className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 transition-all"
                             >
                                 Cancel
                             </button>

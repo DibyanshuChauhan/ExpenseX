@@ -12,6 +12,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-site-verification" content="2A8liOlKP3C9fYtVYiM6MQiAFwoibtXVgLOdbriMcK4" />
     <title>ExpenseX - Smart Expense Tracker</title>
+    <meta name="color-scheme" content="dark light">
+    <script>
+      (function() {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme = stored || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <!-- Google Fonts: Plus Jakarta Sans, Outfit, Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

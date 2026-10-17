@@ -254,38 +254,38 @@ const Home = ({ currentUser }) => {
     };
 
     return (
-        <div className="flex-1 flex flex-col min-h-screen bg-[#090d16] text-slate-100">
+        <div className="flex-1 flex flex-col min-h-screen bg-slate-100/90 dark:bg-[#070b14] text-slate-900 dark:text-slate-100 transition-colors duration-300">
             {/* Ambient Background Aura Glows */}
-            <div className="fixed top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[128px] pointer-events-none" />
-            <div className="fixed top-1/3 right-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-[140px] pointer-events-none" />
-            <div className="fixed bottom-10 left-1/3 w-96 h-96 bg-cyan-600/10 rounded-full blur-[128px] pointer-events-none" />
+            <div className="fixed top-0 left-1/4 w-96 h-96 bg-indigo-500/5 dark:bg-indigo-600/10 rounded-full blur-[128px] pointer-events-none" />
+            <div className="fixed top-1/3 right-1/4 w-96 h-96 bg-violet-500/5 dark:bg-violet-600/10 rounded-full blur-[140px] pointer-events-none" />
+            <div className="fixed bottom-10 left-1/3 w-96 h-96 bg-cyan-500/5 dark:bg-cyan-600/10 rounded-full blur-[128px] pointer-events-none" />
 
             <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 relative z-10 max-w-7xl">
                 {/* Dashboard Hero Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
                                 <HiSparkles size={11} /> Real-time Analytics
                             </span>
                         </div>
-                        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white font-['Outfit']">
-                            Dashboard - <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-white to-violet-300">
+                        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-950 dark:text-white font-['Outfit']">
+                            Dashboard - <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-700 dark:from-indigo-300 dark:via-white dark:to-violet-300">
                                 {currentUser ? currentUser.username : "Guest"}
                             </span>
                         </h1>
-                        <p className="text-sm text-slate-400 mt-1">
+                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 font-medium">
                             Track daily spending, analyze financial health, and stay within your budget limit.
                         </p>
                     </div>
 
-                    {/* Quick Reset Action (Moved to header for clean accessibility) */}
+                    {/* Quick Reset Action */}
                     {currentUser && expenses.length > 0 && (
                         <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={resetExpenses}
-                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 text-xs font-semibold shadow-sm transition-all self-start md:self-auto"
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-500/30 text-xs font-bold shadow-sm transition-all self-start md:self-auto cursor-pointer"
                         >
                             <FaRotateLeft size={13} />
                             <span>Reset All Expenses</span>
@@ -296,63 +296,63 @@ const Home = ({ currentUser }) => {
                 {/* KPI Metrics Hero Cards (4-Column Bento Row) */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                     {/* Monthly Budget Card */}
-                    <div className="p-5 rounded-2xl glass-panel relative overflow-hidden group hover:border-indigo-500/30 transition-all">
+                    <div className="p-5 rounded-2xl glass-panel relative overflow-hidden group hover:border-indigo-500/40 transition-all">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                                 Allocated Budget
                             </span>
-                            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                                 <FaWallet size={14} />
                             </div>
                         </div>
-                        <div className="text-2xl font-black text-white font-mono tracking-tight">
+                        <div className="text-2xl font-black text-slate-950 dark:text-white font-mono tracking-tight">
                             ₹{currentBudget.toLocaleString()}
                         </div>
-                        <p className="text-[11px] text-slate-400 mt-2 flex items-center gap-1">
+                        <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-2 font-medium flex items-center gap-1">
                             {currentBudget > 0 ? "Target limit for this month" : "No budget set yet"}
                         </p>
                     </div>
 
                     {/* Total Expenses Card */}
-                    <div className="p-5 rounded-2xl glass-panel relative overflow-hidden group hover:border-violet-500/30 transition-all">
+                    <div className="p-5 rounded-2xl glass-panel relative overflow-hidden group hover:border-violet-500/40 transition-all">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                                 Total Outflow
                             </span>
-                            <div className="w-8 h-8 rounded-lg bg-violet-500/10 text-violet-400 flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-lg bg-violet-500/10 text-violet-600 dark:text-violet-400 flex items-center justify-center">
                                 <FaArrowTrendUp size={14} />
                             </div>
                         </div>
-                        <div className="text-2xl font-black text-white font-mono tracking-tight">
+                        <div className="text-2xl font-black text-slate-950 dark:text-white font-mono tracking-tight">
                             ₹{totalSpent.toLocaleString()}
                         </div>
-                        <p className="text-[11px] text-slate-400 mt-2">
+                        <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-2 font-medium">
                             Across {expenses.length} recorded {expenses.length === 1 ? "transaction" : "transactions"}
                         </p>
                     </div>
 
                     {/* Remaining Balance Card */}
-                    <div className="p-5 rounded-2xl glass-panel relative overflow-hidden group hover:border-emerald-500/30 transition-all">
+                    <div className="p-5 rounded-2xl glass-panel relative overflow-hidden group hover:border-emerald-500/40 transition-all">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                                 Remaining Balance
                             </span>
                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                                isOverBudget ? "bg-rose-500/10 text-rose-400" : "bg-emerald-500/10 text-emerald-400"
+                                isOverBudget ? "bg-rose-500/10 text-rose-600 dark:text-rose-400" : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                             }`}>
                                 <FaArrowTrendDown size={14} />
                             </div>
                         </div>
                         <div className={`text-2xl font-black font-mono tracking-tight ${
-                            isOverBudget ? "text-rose-400" : "text-emerald-400"
+                            isOverBudget ? "text-rose-600 dark:text-rose-400" : "text-emerald-600 dark:text-emerald-400"
                         }`}>
                             ₹{(remainingBudget > 0 ? remainingBudget : 0).toLocaleString()}
                         </div>
-                        <p className="text-[11px] text-slate-400 mt-2">
+                        <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-2 font-medium">
                             {isOverBudget ? (
-                                <span className="text-rose-400 font-semibold">Exceeded by ₹{(totalSpent - currentBudget).toLocaleString()}</span>
+                                <span className="text-rose-600 dark:text-rose-400 font-bold">Exceeded by ₹{(totalSpent - currentBudget).toLocaleString()}</span>
                             ) : currentBudget > 0 ? (
-                                <span className="text-emerald-400 font-semibold">{100 - spentPercent}% still available</span>
+                                <span className="text-emerald-600 dark:text-emerald-400 font-bold">{100 - spentPercent}% still available</span>
                             ) : (
                                 "Set budget to track savings"
                             )}
@@ -360,24 +360,24 @@ const Home = ({ currentUser }) => {
                     </div>
 
                     {/* Financial Health Card */}
-                    <div className="p-5 rounded-2xl glass-panel relative overflow-hidden group hover:border-cyan-500/30 transition-all">
+                    <div className="p-5 rounded-2xl glass-panel relative overflow-hidden group hover:border-cyan-500/40 transition-all">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                                 Spend Health
                             </span>
                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                                isOverBudget ? "bg-rose-500/10 text-rose-400" : "bg-cyan-500/10 text-cyan-400"
+                                isOverBudget ? "bg-rose-500/10 text-rose-600 dark:text-rose-400" : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
                             }`}>
                                 {isOverBudget ? <FaCircleExclamation size={14} /> : <FaShieldHeart size={14} />}
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className={`text-lg font-bold ${
+                            <span className={`text-lg font-extrabold ${
                                 isOverBudget 
-                                    ? "text-rose-400" 
+                                    ? "text-rose-600 dark:text-rose-400" 
                                     : spentPercent > 75 
-                                    ? "text-amber-400" 
-                                    : "text-emerald-400"
+                                    ? "text-amber-600 dark:text-amber-400" 
+                                    : "text-emerald-600 dark:text-emerald-400"
                             }`}>
                                 {currentBudget === 0 
                                     ? "Unconfigured" 
@@ -388,7 +388,7 @@ const Home = ({ currentUser }) => {
                                     : "Healthy Pace"}
                             </span>
                         </div>
-                        <p className="text-[11px] text-slate-400 mt-2">
+                        <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-2 font-medium">
                             {currentBudget > 0 ? `${spentPercent}% of monthly limit consumed` : "Define monthly budget"}
                         </p>
                     </div>

@@ -28,14 +28,14 @@ const ExpenseList = ({ expenses }) => {
             {/* Header with Title and Search */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-inner">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-inner">
                         <FaListCheck size={16} />
                     </div>
                     <div>
-                        <h3 className="text-base font-bold text-white tracking-tight">
+                        <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
                             Recent Expense History
                         </h3>
-                        <p className="text-xs text-slate-400">
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
                             Search and inspect individual transactions
                         </p>
                     </div>
@@ -52,30 +52,30 @@ const ExpenseList = ({ expenses }) => {
                             placeholder="Filter transactions..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full sm:w-56 pl-8 pr-4 py-2 bg-slate-900/80 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                            className="w-full sm:w-56 pl-8 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-950 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-600 transition-all outline-none shadow-sm"
                         />
                     </div>
 
-                    <div className="flex items-center justify-between sm:justify-start gap-2 px-3 py-2 bg-slate-900/60 rounded-xl border border-white/5 text-xs text-slate-300">
-                        <span className="text-slate-400">Showing:</span>
-                        <span className="font-bold text-white">{filteredExpenses.length}</span>
-                        <span className="text-slate-500">|</span>
-                        <span className="font-mono text-emerald-400 font-bold">₹{totalFilteredSum.toLocaleString()}</span>
+                    <div className="flex items-center justify-between sm:justify-start gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300">
+                        <span className="text-slate-600 dark:text-slate-400 font-medium">Showing:</span>
+                        <span className="font-bold text-slate-950 dark:text-white">{filteredExpenses.length}</span>
+                        <span className="text-slate-300 dark:text-slate-600">|</span>
+                        <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold">₹{totalFilteredSum.toLocaleString()}</span>
                     </div>
                 </div>
             </div>
 
-            {/* Category Quick Pills (if more than 1 category exists) */}
+            {/* Category Quick Pills */}
             {availableCategories.length > 2 && (
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-3 mb-4 scrollbar-none">
                     {availableCategories.map(cat => (
                         <button
                             key={cat}
                             onClick={() => setSelectedCategory(cat)}
-                            className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border ${
                                 selectedCategory === cat
-                                    ? "bg-indigo-600 text-white shadow-sm shadow-indigo-600/30"
-                                    : "bg-slate-900/70 text-slate-400 hover:text-white hover:bg-slate-800"
+                                    ? "bg-indigo-600 border-indigo-500 text-white shadow-sm shadow-indigo-600/30"
+                                    : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
                             }`}
                         >
                             {cat === "all" ? "All Categories" : cat}
@@ -92,11 +92,11 @@ const ExpenseList = ({ expenses }) => {
                     ))}
                 </div>
             ) : (
-                <div className="text-center py-12 rounded-xl border border-dashed border-white/10 bg-slate-900/30 flex flex-col items-center justify-center">
-                    <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-slate-500 mb-3">
+                <div className="text-center py-12 rounded-xl border border-dashed border-slate-300 dark:border-white/10 bg-slate-100/50 dark:bg-slate-900/30 flex flex-col items-center justify-center">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-3">
                         <FaReceipt size={22} />
                     </div>
-                    <p className="text-sm font-semibold text-slate-300">
+                    <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                         {expenses.length === 0 ? "No expenses recorded yet" : "No matching transactions found"}
                     </p>
                     <p className="text-xs text-slate-500 mt-1 max-w-sm">

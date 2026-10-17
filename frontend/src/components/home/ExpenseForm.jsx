@@ -120,14 +120,14 @@ const ExpenseForm = ({ addExpense, disabled = false }) => {
         >
             <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 shadow-inner">
+                    <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-600 dark:text-violet-400 shadow-inner">
                         <FaPlus size={16} />
                     </div>
                     <div>
-                        <h3 className="text-base font-bold text-white tracking-tight">
+                        <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
                             Record New Transaction
                         </h3>
-                        <p className="text-xs text-slate-400">
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
                             Log spending details with instant categorization
                         </p>
                     </div>
@@ -137,11 +137,11 @@ const ExpenseForm = ({ addExpense, disabled = false }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 {/* Amount Input */}
                 <div>
-                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                    <label className="block text-[11px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1.5">
                         Amount (₹)
                     </label>
                     <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold">
+                        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 dark:text-slate-400 font-bold">
                             ₹
                         </div>
                         <input
@@ -151,14 +151,14 @@ const ExpenseForm = ({ addExpense, disabled = false }) => {
                             onChange={handleAmountChange}
                             disabled={disabled}
                             required
-                            className="w-full pl-8 pr-4 py-3 bg-slate-900/70 border border-white/10 rounded-xl text-white placeholder-slate-500 font-mono focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all text-sm disabled:opacity-50"
+                            className="w-full pl-8 pr-4 py-3 bg-white dark:bg-slate-900/90 border border-slate-300 dark:border-slate-700/80 rounded-xl text-slate-950 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 font-mono font-medium focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-600 dark:focus:border-indigo-400 shadow-sm transition-all text-sm disabled:opacity-50 outline-none"
                         />
                     </div>
                 </div>
 
                 {/* Category Dropdown */}
                 <div className="relative dropdown-container">
-                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                    <label className="block text-[11px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1.5">
                         Category
                     </label>
                     <div className="relative flex items-center">
@@ -170,13 +170,13 @@ const ExpenseForm = ({ addExpense, disabled = false }) => {
                             onFocus={() => setIsOpen(true)}
                             disabled={disabled}
                             required
-                            className="w-full pl-3.5 pr-10 py-3 bg-slate-900/70 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all text-sm disabled:opacity-50"
+                            className="w-full pl-3.5 pr-10 py-3 bg-white dark:bg-slate-900/90 border border-slate-300 dark:border-slate-700/80 rounded-xl text-slate-950 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 font-medium focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-600 dark:focus:border-indigo-400 shadow-sm transition-all text-sm disabled:opacity-50 outline-none"
                         />
                         <button
                             type="button"
                             onClick={() => setIsOpen(!isOpen)}
                             disabled={disabled}
-                            className="absolute right-3 p-1 text-slate-400 hover:text-white transition-colors"
+                            className="absolute right-3 p-1 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
                         >
                             <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
                                 <FaChevronDown size={14} />
@@ -191,7 +191,7 @@ const ExpenseForm = ({ addExpense, disabled = false }) => {
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: -6, scale: 0.98 }}
                                 transition={{ duration: 0.15 }}
-                                className="absolute z-30 w-full mt-2 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl max-h-56 overflow-y-auto p-1.5 space-y-0.5"
+                                className="absolute z-30 w-full mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl max-h-56 overflow-y-auto p-1.5 space-y-0.5"
                             >
                                 {filteredCategories.length > 0 ? (
                                     filteredCategories.map((cat, index) => {
@@ -200,9 +200,9 @@ const ExpenseForm = ({ addExpense, disabled = false }) => {
                                             <li
                                                 key={index}
                                                 onClick={() => selectCategory(cat)}
-                                                className="flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer text-xs font-medium text-slate-200 hover:bg-indigo-600/30 hover:text-white hover:border-indigo-500/30 transition-all"
+                                                className="flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer text-xs font-semibold text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-600/30 hover:text-indigo-600 dark:hover:text-white transition-all"
                                             >
-                                                <span className="w-6 h-6 rounded-md bg-white/5 flex items-center justify-center text-indigo-400">
+                                                <span className="w-6 h-6 rounded-md bg-slate-100 dark:bg-white/5 flex items-center justify-center text-indigo-500 dark:text-indigo-400">
                                                     <IconComp size={12} />
                                                 </span>
                                                 <span>{cat}</span>
@@ -210,7 +210,7 @@ const ExpenseForm = ({ addExpense, disabled = false }) => {
                                         );
                                     })
                                 ) : (
-                                    <li className="p-3 text-xs text-slate-400 text-center">
+                                    <li className="p-3 text-xs text-slate-500 text-center font-medium">
                                         No matching categories
                                     </li>
                                 )}
@@ -223,8 +223,8 @@ const ExpenseForm = ({ addExpense, disabled = false }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
                 {/* Date Picker */}
                 <div>
-                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                        <FaCalendarDays size={12} className="text-indigo-400" />
+                    <label className="block text-[11px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                        <FaCalendarDays size={12} className="text-indigo-600 dark:text-indigo-400" />
                         <span>Date</span>
                     </label>
                     <DatePicker
@@ -232,7 +232,7 @@ const ExpenseForm = ({ addExpense, disabled = false }) => {
                         onChange={handleDateChange}
                         dateFormat="dd/MM/yyyy"
                         disabled={disabled}
-                        className="w-full px-3.5 py-3 bg-slate-900/70 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all text-sm disabled:opacity-50"
+                        className="w-full px-3.5 py-3 bg-white dark:bg-slate-900/90 border border-slate-300 dark:border-slate-700/80 rounded-xl text-slate-950 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 font-medium focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-600 dark:focus:border-indigo-400 shadow-sm transition-all text-sm disabled:opacity-50 outline-none"
                         placeholderText="Select Date"
                         required
                         wrapperClassName="w-full"
@@ -241,7 +241,7 @@ const ExpenseForm = ({ addExpense, disabled = false }) => {
 
                 {/* Description */}
                 <div>
-                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                    <label className="block text-[11px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1.5">
                         Description / Note
                     </label>
                     <input
@@ -251,7 +251,7 @@ const ExpenseForm = ({ addExpense, disabled = false }) => {
                         onChange={(e) => setForm({ ...form, description: e.target.value })}
                         disabled={disabled}
                         required
-                        className="w-full px-3.5 py-3 bg-slate-900/70 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all text-sm disabled:opacity-50"
+                        className="w-full px-3.5 py-3 bg-white dark:bg-slate-900/90 border border-slate-300 dark:border-slate-700/80 rounded-xl text-slate-950 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 font-medium focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-600 dark:focus:border-indigo-400 shadow-sm transition-all text-sm disabled:opacity-50 outline-none"
                     />
                 </div>
             </div>
@@ -262,7 +262,7 @@ const ExpenseForm = ({ addExpense, disabled = false }) => {
                 whileTap={{ scale: 0.99 }}
                 type="submit"
                 disabled={disabled}
-                className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold text-sm rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
                 <FaPlus size={14} />
                 <span>Add Expense Transaction</span>
