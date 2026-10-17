@@ -41,7 +41,7 @@ const BudgetInput = ({
                             Monthly Budget Target
                         </h3>
                         <p className="text-xs text-slate-500 dark:text-slate-400">
-                            Set your monthly limit to automatically monitor spend velocity
+                            Set your monthly budget limit to track your spending and remaining balance
                         </p>
                     </div>
                 </div>

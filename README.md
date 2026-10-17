@@ -1,4 +1,4 @@
-# ExpenseX — Full-Stack Fintech Personal Finance Platform
+# ExpenseX - Full-Stack Fintech Personal Finance Platform
 
 <div align="center">
 
@@ -72,7 +72,7 @@ Now, calculating each category's proportion:
 | 🎬 **Entertainment** | ₹100,000 | $\frac{100,000}{115,000} \times 100$ | **87%** |
 | 🩺 **Health** | ₹10,000 | $\frac{10,000}{115,000} \times 100$ | **9%** |
 | 💳 **Subscriptions** | ₹5,000 | $\frac{5,000}{115,000} \times 100$ | **4%** |
-| **Total** | **₹115,000** | — | **100%** |
+| **Total** | **₹115,000** | - | **100%** |
 
 In code (`frontend/src/components/home/SummarySection.jsx`):
 ```javascript

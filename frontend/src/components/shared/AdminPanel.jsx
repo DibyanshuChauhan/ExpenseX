@@ -328,7 +328,7 @@ const AdminPanel = ({ show, onAdminAction, users, adminAction, setAdminAction, h
                                                             </span>
                                                         </td>
                                                         <td className="py-3 px-4 text-slate-900 dark:text-white font-medium">
-                                                            {exp.description || "—"}
+                                                            {exp.description || "-"}
                                                         </td>
                                                         <td className="py-3 px-4 text-right font-mono font-bold text-indigo-600 dark:text-indigo-300">
                                                             ₹{parseFloat(exp.amount || 0).toLocaleString()}

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { FaLinkedin, FaInstagram, FaEnvelope, FaHeart } from "react-icons/fa";
 import { BsTwitterX } from "react-icons/bs";
-import { HiSparkles, HiClock } from "react-icons/hi2";
+import { HiClock } from "react-icons/hi2";
 import SendFeedbackModal from "../footer/modals/FeedbackModal";
 import ContactModal from "../footer/modals/ContactModal";
 import FeaturesModal from "../footer/modals/FeaturesModal";
@@ -125,7 +125,7 @@ const Footer = ({ currentUser: propUser }) => {
                             </h4>
                         </div>
                         <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                            Next-generation financial intelligence. Monitor expenses, optimize budgets, and take full control of your wealth with real-time analytics.
+                            Personal expense tracking and budget management. Log daily spending, track monthly categories, and export records anytime.
                         </p>
                     </div>
 
@@ -209,7 +209,6 @@ const Footer = ({ currentUser: propUser }) => {
                             >
                                 <FaEnvelope size={15} />
                                 <span>Send Feedback</span>
-                                <HiSparkles className="text-yellow-300" size={16} />
                             </motion.button>
                         )}
                     </div>

@@ -1,4 +1,4 @@
-# ExpenseX — Frontend Client
+# ExpenseX - Frontend Client
 
 This directory contains the React 19 + Tailwind CSS v4 frontend client for **ExpenseX**.
 

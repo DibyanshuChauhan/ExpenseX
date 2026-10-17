@@ -54,7 +54,7 @@ const ContactModal = ({ show, onClose }) => {
                                 <span>Personal Information</span>
                             </div>
                             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                                <strong className="text-slate-900 dark:text-white">Dibyanshu Chauhan</strong> — Front-End Web Developer & Full-Stack Engineer based in India. Focused on performant modern web architectures and rich interactive UIs.
+                                <strong className="text-slate-900 dark:text-white">Dibyanshu Chauhan</strong> - Front-End Web Developer & Full-Stack Engineer based in India. Focused on performant modern web architectures and rich interactive UIs.
                             </p>
                         </div>
 
@@ -65,7 +65,7 @@ const ContactModal = ({ show, onClose }) => {
                                 <span>Academic Background</span>
                             </div>
                             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                                <strong className="text-slate-900 dark:text-white">B.Sc. in Information Technology</strong> (2022–2025)<br />
+                                <strong className="text-slate-900 dark:text-white">B.Sc. in Information Technology</strong> (2022-2025)<br />
                                 Hemwati Nandan Bahuguna Garhwal University<br />
                                 Core Stack: React, Tailwind, JavaScript, Node.js, Express, MongoDB.
                             </p>

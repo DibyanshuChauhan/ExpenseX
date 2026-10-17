@@ -39,7 +39,7 @@ const FeaturesModal = ({ show, onClose, currentUser }) => {
                                 ExpenseX Platform Capabilities
                             </h3>
                             <p className="text-xs text-slate-500 dark:text-slate-400">
-                                Comprehensive architecture and intelligent feature breakdown
+                                Overview of application features and tools
                             </p>
                         </div>
                     </div>
@@ -52,20 +52,20 @@ const FeaturesModal = ({ show, onClose, currentUser }) => {
                                 <span>1. Full-Stack Security & Authentication</span>
                             </div>
                             <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-2">
-                                Robust JWT and bcrypt secured user sessions connected to MongoDB persistence:
+                                Secure JWT and bcrypt session handling connected to MongoDB:
                             </p>
                             <ul className="space-y-1.5 text-slate-500 dark:text-slate-400 pl-2">
                                 <li className="flex items-center gap-2">
                                     <FiCheckCircle size={13} className="text-emerald-500 dark:text-emerald-400 shrink-0" />
-                                    <span><strong className="text-slate-800 dark:text-slate-200">Personalized Access</strong>: Individual user accounts with isolated budgets and transaction histories.</span>
+                                    <span><strong className="text-slate-800 dark:text-slate-200">Personal Accounts</strong>: Individual user accounts with separate budgets and transaction histories.</span>
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <FiCheckCircle size={13} className="text-emerald-500 dark:text-emerald-400 shrink-0" />
-                                    <span><strong className="text-slate-800 dark:text-slate-200">Role-Based Access</strong>: Main Admin and Member roles with automatic privilege enforcement.</span>
+                                    <span><strong className="text-slate-800 dark:text-slate-200">Role-Based Access</strong>: Admin and Member roles with privilege enforcement.</span>
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <FiCheckCircle size={13} className="text-emerald-500 dark:text-emerald-400 shrink-0" />
-                                    <span><strong className="text-slate-800 dark:text-slate-200">Self-Service Recovery</strong>: Instant password reset and in-app password changes.</span>
+                                    <span><strong className="text-slate-800 dark:text-slate-200">Password Management</strong>: Reset password workflow and in-app password changes.</span>
                                 </li>
                             </ul>
                         </div>
@@ -74,20 +74,20 @@ const FeaturesModal = ({ show, onClose, currentUser }) => {
                         <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5">
                             <div className="flex items-center gap-2 mb-2 text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
                                 <FiTrendingUp size={14} />
-                                <span>2. Real-Time Financial Health & Budgeting</span>
+                                <span>2. Budgeting & Expense Tracking</span>
                             </div>
                             <ul className="space-y-1.5 text-slate-500 dark:text-slate-400 pl-2">
                                 <li className="flex items-center gap-2">
                                     <FiCheckCircle size={13} className="text-emerald-500 dark:text-emerald-400 shrink-0" />
-                                    <span><strong className="text-slate-800 dark:text-slate-200">Dynamic Limit Tracking</strong>: Set and adjust monthly limits with instantaneous utilization percentage.</span>
+                                    <span><strong className="text-slate-800 dark:text-slate-200">Monthly Limit Tracking</strong>: Set and adjust monthly limits with instant utilization percentage.</span>
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <FiCheckCircle size={13} className="text-emerald-500 dark:text-emerald-400 shrink-0" />
-                                    <span><strong className="text-slate-800 dark:text-slate-200">Transaction Composer</strong>: Quick multi-category expense recording with calendar date picker.</span>
+                                    <span><strong className="text-slate-800 dark:text-slate-200">Expense Logging</strong>: Quick multi-category expense recording with calendar date picker.</span>
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <FiCheckCircle size={13} className="text-emerald-500 dark:text-emerald-400 shrink-0" />
-                                    <span><strong className="text-slate-800 dark:text-slate-200">Interactive Charts</strong>: Dynamic Bar Chart trends comparing spending vs budget across weeks and months.</span>
+                                    <span><strong className="text-slate-800 dark:text-slate-200">Visual Charts</strong>: Bar chart comparisons of spending against budget across weekly and monthly periods.</span>
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <FiCheckCircle size={13} className="text-emerald-500 dark:text-emerald-400 shrink-0" />
@@ -118,7 +118,7 @@ const FeaturesModal = ({ show, onClose, currentUser }) => {
                         <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5">
                             <div className="flex items-center gap-2 mb-2 text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
                                 <FiShield size={14} />
-                                <span>4. Administrative Command Center</span>
+                                <span>4. Administrator Panel</span>
                             </div>
                             <ul className="space-y-1.5 text-slate-500 dark:text-slate-400 pl-2">
                                 <li className="flex items-center gap-2">
@@ -127,7 +127,7 @@ const FeaturesModal = ({ show, onClose, currentUser }) => {
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <FiCheckCircle size={13} className="text-emerald-500 dark:text-emerald-400 shrink-0" />
-                                    <span><strong className="text-slate-800 dark:text-slate-200">Global Spend Inspection</strong>: Audit expenses across all system accounts.</span>
+                                    <span><strong className="text-slate-800 dark:text-slate-200">All-User Spend Audit</strong>: Inspect expenses logged across system accounts.</span>
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <FiCheckCircle size={13} className="text-emerald-500 dark:text-emerald-400 shrink-0" />

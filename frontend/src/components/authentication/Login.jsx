@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { FiEye, FiEyeOff, FiUser, FiLock } from "react-icons/fi";
-import { HiSparkles } from "react-icons/hi2";
+import { FiEye, FiEyeOff, FiUser, FiLock, FiShield } from "react-icons/fi";
 import ThemeToggle from "../shared/ThemeToggle";
 import logo from "../../../public/logo.svg";
 
@@ -43,7 +42,7 @@ const Login = ({ onLogin, setShowSignup, setShowForgetPassword, showChangePasswo
                         <img src={logo} alt="ExpenseX" className="w-8 h-8 object-contain drop-shadow" />
                     </div>
                     <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 mb-2">
-                        <HiSparkles size={10} /> Smart Finance Suite
+                        <FiShield size={11} /> Expense Management Suite
                     </div>
                     <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white font-['Outfit']">
                         Sign In to ExpenseX

@@ -140,7 +140,7 @@ const ChartSection = ({ viewType, getChartData }) => {
                     </div>
                     <div>
                         <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
-                            Spending Velocity & Budget Comparison
+                            Spending & Budget Comparison
                         </h3>
                         <p className="text-xs text-slate-500 dark:text-slate-400">
                             {viewType === "monthly" ? "Monthly" : "Weekly"} timeline tracking vs budget limit
@@ -158,10 +158,10 @@ const ChartSection = ({ viewType, getChartData }) => {
                             <FaChartColumn size={22} />
                         </div>
                         <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                            No Visual Analytics Available Yet
+                            No Chart Data Available Yet
                         </p>
                         <p className="text-xs text-slate-500 dark:text-slate-500 mt-1 max-w-sm">
-                            Add your first expense or set a budget above to generate interactive trend curves.
+                            Add your first expense or set a budget to display the comparison chart.
                         </p>
                     </div>
                 )}

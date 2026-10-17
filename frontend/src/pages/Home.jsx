@@ -18,7 +18,7 @@ import {
     FaShieldHeart, 
     FaCircleExclamation 
 } from "react-icons/fa6";
-import { HiSparkles } from "react-icons/hi2";
+import { FiTrendingUp } from "react-icons/fi";
 import { api } from "../services/api";
 
 const Home = ({ currentUser }) => {
@@ -266,7 +266,7 @@ const Home = ({ currentUser }) => {
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
-                                <HiSparkles size={11} /> Real-time Analytics
+                                <FiTrendingUp size={12} /> Expense Overview
                             </span>
                         </div>
                         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-950 dark:text-white font-['Outfit']">
@@ -275,7 +275,7 @@ const Home = ({ currentUser }) => {
                             </span>
                         </h1>
                         <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 font-medium">
-                            Track daily spending, analyze financial health, and stay within your budget limit.
+                            Track daily spending, monitor category totals, and stay within your budget limit.
                         </p>
                     </div>
 

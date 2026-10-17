@@ -45,7 +45,7 @@ const Signup = ({ onSignup, setShowSignup }) => {
                         Create ExpenseX Account
                     </h2>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                        Start managing your wealth and expenses seamlessly
+                        Start tracking your daily expenses and monthly budget
                     </p>
                 </div>
 
