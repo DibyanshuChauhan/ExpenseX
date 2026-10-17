@@ -1,113 +1,132 @@
 /* eslint-disable no-unused-vars */
-import React from "react"; // Imports React for component creation
-import { motion } from "framer-motion"; // Imports motion for animations
-import { FaLinkedin, FaInstagram, FaEnvelope } from "react-icons/fa"; // Imports social media and email icons
-import { BsTwitterX } from "react-icons/bs"; // Imports Twitter X icon
-import { FiX } from "react-icons/fi"; // Imports close icon
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaLinkedin, FaInstagram, FaEnvelope } from "react-icons/fa";
+import { BsTwitterX } from "react-icons/bs";
+import { FiX, FiUser, FiBookOpen, FiBriefcase, FiMail } from "react-icons/fi";
 
-// ContactModal component displays a modal with personal and contact information
-// Props:
-// - show: Boolean to control modal visibility
-// - onClose: Function to close the modal
 const ContactModal = ({ show, onClose }) => {
-    // Returns null if the modal should not be displayed
     if (!show) return null;
 
     return (
-        // Outer overlay dims the background and centers the modal
-        <motion.div
-            initial={{ opacity: 0 }} // Starts with zero opacity
-            animate={{ opacity: 1 }} // Fades in to full opacity
-            exit={{ opacity: 0 }} // Fades out when closing
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto"
-            onClick={onClose} // Closes modal when clicking outside
-        >
-             {/* Inner modal container with animation and styling */}
+        <AnimatePresence>
             <motion.div
-                initial={{ scale: 0.7, y: 50 }} // Starts scaled down and below
-                animate={{ scale: 1, y: 0 }} // Scales up and moves to center
-                exit={{ scale: 0.7, y: 50 }} // Scales down and moves down on exit
-                transition={{ type: "spring", damping: 15, stiffness: 100 }} // Applies spring animation
-                className="bg-gradient-to-br from-gray-800 to-gray-900 bg-opacity-95 backdrop-blur-md p-6 rounded-xl shadow-2xl w-full max-w-md mx-4 md:max-w-lg lg:max-w-xl border border-gray-700 relative"
-                onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center z-50 p-4 overflow-y-auto"
+                onClick={onClose}
             >
-                 {/* Close button positioned at top-right */}
-                <motion.button
-                    whileHover={{ rotate: 90, scale: 1.1 }} // Rotates and enlarges on hover
-                    whileTap={{ scale: 0.9 }} // Slightly shrinks on click
-                    onClick={onClose} // Triggers modal closure
-                    className="absolute top-4 right-4 text-gray-400 hover:text-white transition-all"
+                <motion.div
+                    initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                    transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                    className="glass-panel-elevated p-6 sm:p-8 rounded-3xl w-full max-w-xl relative border border-white/10 shadow-2xl max-h-[90vh] overflow-y-auto"
+                    onClick={(e) => e.stopPropagation()}
                 >
-                    {/* Displays the close icon */}
-                    <FiX size={20} />  
-                </motion.button>
-                 {/* Title of the contact modal */}
-                <h3 className="text-2xl font-semibold text-white mb-4 text-center">About Me & Contact</h3>
-                 {/* Container for contact and personal information sections */}
-                <div className="space-y-6 text-gray-300">
-                    {/* Personal Info */}
-                    <div>
-                         {/* Section title for personal details */}
-                        <h4 className="text-lg font-medium text-indigo-300 mb-2">Personal Details</h4>
-                         {/* Displays personal information */}
-                        <p className="text-sm">
-                            Name: Dibyanshu Chauhan<br />
-                            Role: Front-End Web Developer<br />
-                            Location: India
-                        </p>
-                    </div>
-                    {/* Educational Background */}
-                    <div>
-                         {/* Section title for educational background */}
-                        <h4 className="text-lg font-medium text-indigo-300 mb-2">Educational Background</h4>
-                         {/* Displays educational details */}
-                        <p className="text-sm">
-                            Degree: Bachelors of Science in Information Technology<br />
-                            University: Hemwati Nandan Bahuguna Garhwal University<br />
-                            Year: 2022-2025<br />
-                            Skills: HTML, CSS, Javascript, React, Tailwind
-                        </p>
-                    </div>
-                    {/* Professional Experience */}
-                    <div>
-                         {/* Section title for professional experience */}
-                        <h4 className="text-lg font-medium text-indigo-300 mb-2">Professional Experience</h4>
-                         {/* Displays professional experience details */}
-                        <p className="text-sm">
-                            - Developed Expense Tracker app using React and Tailwind.<br />
-                            - 2+ years of experience in web development.<br />
-                            - Worked on real-time data solutions and UI/UX optimization.
-                        </p>
-                    </div>
-                    {/* Contact Information */}
-                    <div>
-                         {/* Section title for contact information */}
-                        <h4 className="text-lg font-medium text-indigo-300 mb-2">Contact Information</h4>
-                         {/* Displays email contact with icon */}
-                        <p className="text-sm flex items-center space-x-2">
-                            <FaEnvelope /> <span>Email: cdivyanshu98@gmail.com</span>
-                        </p>
-                         {/* Container for social media links */}
-                        <div className="flex space-x-4 mt-2">
-                             {/* LinkedIn profile link */}
-                            <a href="https://www.linkedin.com/in/divyanshu011/" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400">
-                                <FaLinkedin size={20} />
-                            </a>
-                             {/* Twitter X profile link */}
-                            <a href="https://x.com/cdivyanshu98" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400">
-                                <BsTwitterX size={20} />
-                            </a>
-                             {/* Instagram profile link */}
-                            <a href="https://www.instagram.com/devyanshu__011/" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400">
-                                <FaInstagram size={20} />
-                            </a>
+                    <button
+                        onClick={onClose}
+                        className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+                    >
+                        <FiX size={18} />
+                    </button>
+
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                            <FiUser size={20} />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-white tracking-tight">
+                                Developer & Creator Profile
+                            </h3>
+                            <p className="text-xs text-slate-400">
+                                Engineering background and contact channels
+                            </p>
                         </div>
                     </div>
-                </div>
+
+                    <div className="space-y-4 text-xs">
+                        {/* Personal Details */}
+                        <div className="p-4 rounded-2xl bg-slate-900/60 border border-white/5">
+                            <div className="flex items-center gap-2 mb-2 text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
+                                <FiUser size={14} />
+                                <span>Personal Information</span>
+                            </div>
+                            <p className="text-slate-300 leading-relaxed">
+                                <strong className="text-white">Dibyanshu Chauhan</strong> — Front-End Web Developer & Full-Stack Engineer based in India. Focused on performant modern web architectures and rich interactive UIs.
+                            </p>
+                        </div>
+
+                        {/* Education */}
+                        <div className="p-4 rounded-2xl bg-slate-900/60 border border-white/5">
+                            <div className="flex items-center gap-2 mb-2 text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
+                                <FiBookOpen size={14} />
+                                <span>Academic Background</span>
+                            </div>
+                            <p className="text-slate-300 leading-relaxed">
+                                <strong className="text-white">B.Sc. in Information Technology</strong> (2022–2025)<br />
+                                Hemwati Nandan Bahuguna Garhwal University<br />
+                                Core Stack: React, Tailwind, JavaScript, Node.js, Express, MongoDB.
+                            </p>
+                        </div>
+
+                        {/* Experience */}
+                        <div className="p-4 rounded-2xl bg-slate-900/60 border border-white/5">
+                            <div className="flex items-center gap-2 mb-2 text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
+                                <FiBriefcase size={14} />
+                                <span>Professional Highlights</span>
+                            </div>
+                            <p className="text-slate-300 leading-relaxed">
+                                • Architected and developed ExpenseX full-stack finance tracker.<br />
+                                • 2+ years specialized web development crafting real-time, responsive applications.<br />
+                                • Deep focus on design systems, micro-animations, and UX optimization.
+                            </p>
+                        </div>
+
+                        {/* Direct Channels & Social */}
+                        <div className="p-4 rounded-2xl bg-slate-900/60 border border-white/5">
+                            <div className="flex items-center gap-2 mb-3 text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
+                                <FiMail size={14} />
+                                <span>Direct Inquiries</span>
+                            </div>
+                            <p className="text-slate-300 flex items-center gap-2 mb-3 font-mono">
+                                <FaEnvelope className="text-slate-400" />
+                                <span>cdivyanshu98@gmail.com</span>
+                            </p>
+
+                            <div className="flex items-center gap-3 pt-1">
+                                <a
+                                    href="https://www.linkedin.com/in/divyanshu011/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-indigo-400 hover:bg-slate-700 transition-all"
+                                >
+                                    <FaLinkedin size={16} />
+                                </a>
+                                <a
+                                    href="https://x.com/cdivyanshu98"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-indigo-400 hover:bg-slate-700 transition-all"
+                                >
+                                    <BsTwitterX size={15} />
+                                </a>
+                                <a
+                                    href="https://www.instagram.com/devyanshu__011/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-indigo-400 hover:bg-slate-700 transition-all"
+                                >
+                                    <FaInstagram size={16} />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
             </motion.div>
-        </motion.div>
+        </AnimatePresence>
     );
 };
 
-// Exports the ContactModal component for use in the application
 export default ContactModal;

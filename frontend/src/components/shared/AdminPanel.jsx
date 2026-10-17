@@ -1,52 +1,33 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion"; // Library for animations
-import { FiEye, FiEyeOff, FiTrash2, FiSearch } from "react-icons/fi"; // Icons for UI interactions
-import { toast } from "react-toastify"; // Notification library for user feedback
-import "react-toastify/dist/ReactToastify.css"; // Styles for toast notifications
-
+import { motion, AnimatePresence } from "framer-motion";
+import { FiEye, FiEyeOff, FiTrash2, FiSearch, FiShield, FiUserPlus, FiUsers, FiDollarSign, FiMessageSquare } from "react-icons/fi";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { api } from "../../services/api";
 
-// Main AdminPanel component
-// Props:
-// - show: Boolean to toggle visibility of the panel
-// - onAdminAction: Function to handle admin actions like user deletion
-// - users: Array of user objects
-// - adminAction: State object for user creation form
-// - setAdminAction: Function to update adminAction state
-// - handleAdminSubmit: Function to handle form submission
-// - currentUser: Object representing the logged-in user
 const AdminPanel = ({ show, onAdminAction, users, adminAction, setAdminAction, handleAdminSubmit, currentUser }) => {
-    // State to store feedbacks displayed to admin
     const [feedbacks, setFeedbacks] = useState([]);
-    // State to store original feedbacks for resetting after filtering
     const [originalFeedbacks, setOriginalFeedbacks] = useState([]);
-    // State for search filter input in feedback section
     const [filter, setFilter] = useState("");
-    // State to toggle password visibility in user creation form
     const [showPassword, setShowPassword] = useState(false);
-    // State to store all user expenses fetched from backend
     const [allExpenses, setAllExpenses] = useState({});
-    // State to store budgets per user fetched from backend
     const [budgets, setBudgets] = useState({});
+    const [activeTab, setActiveTab] = useState("users"); // "users" | "expenses" | "feedback" | "create"
 
-    // Fetch feedbacks, all expenses, and budgets from backend
     const loadAdminData = useCallback(async () => {
         try {
-            // Load feedbacks
             const fbRes = await api.feedback.getAll();
             if (fbRes.success && Array.isArray(fbRes.feedbacks)) {
                 setFeedbacks(fbRes.feedbacks);
                 setOriginalFeedbacks(fbRes.feedbacks);
             }
 
-            // Load grouped expenses
             const expRes = await api.expenses.getAllGrouped();
             if (expRes.success && expRes.expenses) {
                 setAllExpenses(expRes.expenses);
             }
 
-            // Load budgets for all current users
             if (users && users.length > 0) {
                 const budgetEntries = await Promise.all(
                     users.map(async (u) => {
@@ -71,23 +52,18 @@ const AdminPanel = ({ show, onAdminAction, users, adminAction, setAdminAction, h
         }
     }, [show, loadAdminData]);
 
-    // Checks if the current user is the default admin (username: "admin" and has admin privileges)
     const isDefaultAdmin = currentUser?.username === "admin" && Boolean(currentUser?.isAdmin);
 
-    // Retrieves all user expenses
     const getAllExpenses = () => allExpenses || {};
 
-    // Retrieves a specific user's budget
     const getUserBudget = (username) => {
         return budgets[username] !== undefined ? budgets[username] : 0;
     };
 
-    // Fetches expenses for the default admin only
     const getAdminExpenses = () => {
         return (allExpenses && allExpenses["admin"]) || [];
     };
 
-    // Deletes a single feedback by ID (only for default admin)
     const handleDeleteFeedback = async (fbItem) => {
         if (isDefaultAdmin && fbItem) {
             try {
@@ -109,13 +85,13 @@ const AdminPanel = ({ show, onAdminAction, users, adminAction, setAdminAction, h
         }
     };
 
-    // Shows a confirmation toast for deleting all feedbacks (only for default admin)
     const handleDeleteAllFeedbacks = () => {
         if (isDefaultAdmin) {
             toast.warn(
                 <div>
-                    <p>Are you sure you want to delete all feedbacks? This action cannot be undone!</p>
-                    <div className="mt-2 flex justify-end space-x-2">
+                    <p className="font-semibold text-white mb-1">Clear Feedback Records</p>
+                    <p className="text-xs text-slate-300">Are you sure you want to delete all user feedback submissions? This action cannot be reversed.</p>
+                    <div className="mt-3 flex justify-end space-x-2">
                         <button
                             onClick={async () => {
                                 toast.dismiss();
@@ -134,15 +110,15 @@ const AdminPanel = ({ show, onAdminAction, users, adminAction, setAdminAction, h
                                     toast.error(err.message || "Failed to clear feedbacks!");
                                 }
                             }}
-                            className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                            className="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-1.5 rounded-lg font-semibold transition-all shadow-md"
                         >
-                            Yes
+                            Yes, Clear All
                         </button>
                         <button
                             onClick={() => toast.dismiss()}
-                            className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700"
+                            className="bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
                         >
-                            No
+                            Cancel
                         </button>
                     </div>
                 </div>,
@@ -157,7 +133,6 @@ const AdminPanel = ({ show, onAdminAction, users, adminAction, setAdminAction, h
         }
     };
 
-    // Filters feedbacks based on username or feedback content
     const handleFilter = () => {
         if (filter) {
             const filteredFeedbacks = originalFeedbacks.filter((fb) =>
@@ -170,300 +145,357 @@ const AdminPanel = ({ show, onAdminAction, users, adminAction, setAdminAction, h
         }
     };
 
-    // Triggers filtering when Enter key is pressed
     const handleKeyPress = (e) => {
         if (e.key === "Enter") {
             handleFilter();
         }
     };
 
-    // CONDITIONAL RENDERING: If 'show' prop is false, render nothing (hides the entire component)
     if (!show) return null;
 
-    // Main UI rendering with Framer Motion animations
     return (
         <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -15 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.3 }}
-            className="container mx-auto mt-6 p-6 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-2xl border border-gray-700"
+            className="border-t border-indigo-500/20 bg-slate-950/95 backdrop-blur-2xl px-4 py-8 sm:px-6 lg:px-8 shadow-2xl relative z-30"
         >
-            {/* Header */}
-            <h3 className="text-2xl font-bold text-white mb-6 text-center">Admin Panel Dashboard</h3>
-
-            {/* All Users Section */}
-            <div className="mb-8">
-                <h4 className="text-xl text-gray-200 font-semibold mb-4">All Users</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {Array.isArray(users) && users.map((u, index) => (
-                        <motion.div
-                            key={u._id || u.id || index}
-                            whileHover={{ scale: 1.05 }}
-                            className="bg-gray-700 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow"
-                        >
-                            <p className="text-gray-300">
-                                {u.username} <span className={u.isAdmin ? "text-green-400" : "text-yellow-400"}>(Admin: {u.isAdmin ? "Yes" : "No"})</span>
-                            </p>
-                            <p className="text-gray-400 text-sm">Budget: ₹{getUserBudget(u.username).toFixed(2)}</p>
-                            {/* CONDITIONAL RENDERING: Displays delete button for non-default admin users, only if current user is default admin */}
-                            {u.username !== "admin" && isDefaultAdmin && (
-                                <button
-                                    onClick={() => onAdminAction("delete", { username: u.username })}
-                                    className="mt-2 text-red-400 hover:text-red-500 text-sm"
-                                >
-                                    Delete User
-                                </button>
-                            )}
-                        </motion.div>
-                    ))}
-                </div>
-            </div>
-
-            {/* All Users' Expenses Section */}
-            <div className="mb-8">
-                <h4 className="text-xl text-gray-200 font-semibold mb-4">All Users' Expenses</h4>
-                {Object.entries(getAllExpenses()).map(([username, userExpenses]) => (
-                    <motion.div
-                        key={username}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="bg-gray-700 p-4 rounded-lg shadow-md mb-4"
-                    >
-                        <h5 className="text-lg text-gray-100 font-medium mb-2">
-                            {username}'s Expenses (Budget: ₹{getUserBudget(username).toFixed(2)})
-                        </h5>
-                        {/* CONDITIONAL RENDERING: Shows a table of expenses if there are any, otherwise displays a message */}
-                        {userExpenses.length > 0 ? (
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-gray-300">
-                                    <thead>
-                                        <tr className="border-b border-gray-600">
-                                            <th className="text-left py-2">Date</th>
-                                            <th className="text-left py-2">Amount (₹)</th>
-                                            <th className="text-left py-2">Category</th>
-                                            <th className="text-left py-2">Description</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {userExpenses.map((exp, idx) => (
-                                            <tr key={idx} className="border-b border-gray-600 hover:bg-gray-600">
-                                                <td className="py-2">{new Date(exp.date).toLocaleDateString()}</td>
-                                                <td className="py-2">{exp.amount}</td>
-                                                <td className="py-2">{exp.category}</td>
-                                                <td className="py-2">{exp.description || "N/A"}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        ) : (
-                            <p className="text-gray-400 italic">No expenses recorded</p>
-                        )}
-                    </motion.div>
-                ))}
-            </div>
-
-            {/* Admin's Own Expenses Section */}
-            <div className="mb-8">
-                <h4 className="text-xl text-gray-200 font-semibold mb-4">Admin's Expenses</h4>
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="bg-green-900 p-4 rounded-lg shadow-md"
-                >
-                    <h5 className="text-lg text-gray-100 font-medium mb-2">
-                        Admin's Expenses (Budget: ₹{getUserBudget("admin").toFixed(2)})
-                    </h5>
-                    {/* CONDITIONAL RENDERING: Displays admin expenses table if there are any, otherwise shows a message */}
-                    {getAdminExpenses().length > 0 ? (
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-gray-300">
-                                <thead>
-                                    <tr className="border-b border-green-700">
-                                        <th className="text-left py-2">Date</th>
-                                        <th className="text-left py-2">Amount (₹)</th>
-                                        <th className="text-left py-2">Category</th>
-                                        <th className="text-left py-2">Description</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {getAdminExpenses().map((exp, idx) => (
-                                        <tr key={idx} className="border-b border-green-700 hover:bg-green-800">
-                                            <td className="py-2">{new Date(exp.date).toLocaleDateString()}</td>
-                                            <td className="py-2">{exp.amount}</td>
-                                            <td className="py-2">{exp.category}</td>
-                                            <td className="py-2">{exp.description || "N/A"}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+            <div className="container mx-auto max-w-7xl">
+                {/* Admin Header with Tabs */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-white/10">
+                    <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-inner">
+                            <FiShield size={22} />
                         </div>
-                    ) : (
-                        <p className="text-gray-400 italic">No admin expenses recorded</p>
-                    )}
-                </motion.div>
-            </div>
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <h3 className="text-xl font-bold text-white tracking-tight">
+                                    Administrative Command Center
+                                </h3>
+                                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                                    {isDefaultAdmin ? "Super Admin" : "Auditor"}
+                                </span>
+                            </div>
+                            <p className="text-xs text-slate-400">
+                                Manage user accounts, inspect global spending, and monitor feedback
+                            </p>
+                        </div>
+                    </div>
 
-            {/* Create User Form Section */}
-            <div>
-                <h4 className="text-xl text-gray-200 font-semibold mb-4">Create New User</h4>
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="bg-gray-700 p-6 rounded-lg shadow-md"
-                >
-                    <form onSubmit={handleAdminSubmit} className="space-y-4">
-                        {/* Dropdown to select action type, disabled for non-default admins */}
-                        <select
-                            value={adminAction.type}
-                            onChange={(e) => setAdminAction({ ...adminAction, type: e.target.value })}
-                            className="w-full p-2 bg-gray-600 border-none rounded-lg text-white focus:ring-2 focus:ring-indigo-500"
-                            required
-                            disabled={!isDefaultAdmin}
+                    {/* Navigation Segment Tabs */}
+                    <div className="inline-flex p-1 bg-slate-900 rounded-xl border border-white/10 shadow-inner self-start md:self-auto overflow-x-auto">
+                        <button
+                            onClick={() => setActiveTab("users")}
+                            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                activeTab === "users" ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30" : "text-slate-400 hover:text-white"
+                            }`}
                         >
-                            <option value="">Select Action</option>
-                            <option value="create">Create User</option>
-                        </select>
-                        {/* CONDITIONAL RENDERING: Shows form inputs only if 'create' action is selected */}
-                        {adminAction.type === "create" && (
-                            <>
+                            <FiUsers size={14} />
+                            <span>Users ({users?.length || 0})</span>
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("expenses")}
+                            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                activeTab === "expenses" ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30" : "text-slate-400 hover:text-white"
+                            }`}
+                        >
+                            <FiDollarSign size={14} />
+                            <span>All Expenses</span>
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("feedback")}
+                            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                activeTab === "feedback" ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30" : "text-slate-400 hover:text-white"
+                            }`}
+                        >
+                            <FiMessageSquare size={14} />
+                            <span>Feedback ({feedbacks?.length || 0})</span>
+                        </button>
+                        {isDefaultAdmin && (
+                            <button
+                                onClick={() => setActiveTab("create")}
+                                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                    activeTab === "create" ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30" : "text-slate-400 hover:text-white"
+                                }`}
+                            >
+                                <FiUserPlus size={14} />
+                                <span>Create User</span>
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {/* Tab: Users Management */}
+                {activeTab === "users" && (
+                    <div>
+                        <div className="flex items-center justify-between mb-4">
+                            <h4 className="text-sm font-bold uppercase tracking-wider text-slate-300">
+                                Registered Accounts & Assigned Budgets
+                            </h4>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {Array.isArray(users) && users.map((u, index) => {
+                                const budgetVal = getUserBudget(u.username);
+                                return (
+                                    <div
+                                        key={u._id || u.id || index}
+                                        className="p-5 rounded-2xl glass-card border border-white/5 relative group"
+                                    >
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500/20 to-violet-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold">
+                                                    {u.username.charAt(0).toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <span className="text-sm font-bold text-white block">
+                                                        {u.username}
+                                                    </span>
+                                                    <span className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full inline-block mt-0.5 ${
+                                                        u.isAdmin 
+                                                            ? "bg-amber-500/20 text-amber-300 border border-amber-500/30" 
+                                                            : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                                                    }`}>
+                                                        {u.isAdmin ? "Administrator" : "Standard User"}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {u.username !== "admin" && isDefaultAdmin && (
+                                                <button
+                                                    onClick={() => onAdminAction("delete", { username: u.username })}
+                                                    className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                                                    title="Delete User Account"
+                                                >
+                                                    <FiTrash2 size={16} />
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs">
+                                            <span className="text-slate-400">Monthly Budget:</span>
+                                            <span className="font-mono font-bold text-white">
+                                                ₹{budgetVal.toLocaleString()}
+                                            </span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
+
+                {/* Tab: All Expenses Monitoring */}
+                {activeTab === "expenses" && (
+                    <div className="space-y-6">
+                        {Object.entries(getAllExpenses()).map(([user, userExpenses]) => (
+                            <div key={user} className="p-6 rounded-2xl glass-panel">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-white/5">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold text-xs">
+                                            {user.charAt(0).toUpperCase()}
+                                        </div>
+                                        <h5 className="text-base font-bold text-white">
+                                            {user}'s Transactions
+                                        </h5>
+                                    </div>
+                                    <div className="text-xs text-slate-400">
+                                        Budget: <span className="font-mono text-emerald-400 font-bold">₹{getUserBudget(user).toLocaleString()}</span> | 
+                                        Entries: <span className="text-white font-bold">{userExpenses.length}</span>
+                                    </div>
+                                </div>
+
+                                {userExpenses.length > 0 ? (
+                                    <div className="overflow-x-auto rounded-xl border border-white/5">
+                                        <table className="w-full text-left text-xs text-slate-300">
+                                            <thead className="bg-slate-900/90 text-slate-400 uppercase font-bold tracking-wider">
+                                                <tr>
+                                                    <th className="py-3 px-4">Date</th>
+                                                    <th className="py-3 px-4">Category</th>
+                                                    <th className="py-3 px-4">Description</th>
+                                                    <th className="py-3 px-4 text-right">Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-white/5">
+                                                {userExpenses.map((exp, idx) => (
+                                                    <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
+                                                        <td className="py-3 px-4 font-mono text-slate-400">
+                                                            {new Date(exp.date).toLocaleDateString()}
+                                                        </td>
+                                                        <td className="py-3 px-4">
+                                                            <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-white/5">
+                                                                {exp.category}
+                                                            </span>
+                                                        </td>
+                                                        <td className="py-3 px-4 text-white font-medium">
+                                                            {exp.description || "—"}
+                                                        </td>
+                                                        <td className="py-3 px-4 text-right font-mono font-bold text-indigo-300">
+                                                            ₹{parseFloat(exp.amount || 0).toLocaleString()}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                ) : (
+                                    <p className="text-xs text-slate-500 italic py-2">No expenses logged for this account.</p>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* Tab: Feedback Management */}
+                {activeTab === "feedback" && (
+                    <div className="p-6 rounded-2xl glass-panel">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                            <div className="relative w-full sm:w-80">
+                                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <FiSearch size={14} />
+                                </div>
                                 <input
                                     type="text"
-                                    placeholder="Username"
+                                    value={filter}
+                                    onChange={(e) => setFilter(e.target.value)}
+                                    onKeyDown={handleKeyPress}
+                                    placeholder="Filter by user or message..."
+                                    className="w-full pl-9 pr-10 py-2.5 bg-slate-900/80 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/50 outline-none"
+                                />
+                                <button
+                                    onClick={handleFilter}
+                                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-indigo-400 hover:text-indigo-300"
+                                >
+                                    Filter
+                                </button>
+                            </div>
+
+                            {isDefaultAdmin && feedbacks.length > 0 && (
+                                <button
+                                    onClick={handleDeleteAllFeedbacks}
+                                    className="flex items-center gap-2 px-3.5 py-2 bg-rose-500/10 text-rose-300 border border-rose-500/20 hover:bg-rose-500/20 rounded-xl text-xs font-semibold transition-all self-start sm:self-auto"
+                                >
+                                    <FiTrash2 size={13} />
+                                    <span>Delete All Feedbacks</span>
+                                </button>
+                            )}
+                        </div>
+
+                        {feedbacks.length > 0 ? (
+                            <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
+                                {feedbacks.map((fb, idx) => (
+                                    <div
+                                        key={fb._id || fb.id || idx}
+                                        className="p-4 rounded-xl bg-slate-900/70 border border-white/5 hover:border-indigo-500/30 transition-all flex items-start justify-between gap-4"
+                                    >
+                                        <div className="space-y-1">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs font-bold text-white">
+                                                    {fb.username}
+                                                </span>
+                                                <span className="text-[10px] text-slate-500 font-mono">
+                                                    {new Date(fb.timestamp).toLocaleString()}
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-slate-300 leading-relaxed">
+                                                {fb.feedback}
+                                            </p>
+                                        </div>
+
+                                        {isDefaultAdmin && (
+                                            <button
+                                                onClick={() => handleDeleteFeedback(fb)}
+                                                className="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
+                                                title="Delete Feedback"
+                                            >
+                                                <FiTrash2 size={15} />
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-8 text-xs text-slate-500 italic">
+                                No feedback entries match your query.
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Tab: Create User */}
+                {activeTab === "create" && isDefaultAdmin && (
+                    <div className="max-w-xl mx-auto p-6 rounded-2xl glass-panel">
+                        <h4 className="text-base font-bold text-white mb-2">
+                            Provision New User Account
+                        </h4>
+                        <p className="text-xs text-slate-400 mb-6">
+                            Create an authenticated login profile with custom role permissions
+                        </p>
+
+                        <form onSubmit={handleAdminSubmit} className="space-y-4">
+                            <input
+                                type="hidden"
+                                value={(adminAction.type = "create")}
+                            />
+
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                                    Account Username
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter username"
                                     value={adminAction.username}
                                     onChange={(e) => setAdminAction({ ...adminAction, username: e.target.value })}
-                                    className="w-full p-2 bg-gray-600 border-none rounded-lg text-white focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full px-4 py-3 bg-slate-900/80 border border-white/10 rounded-xl text-white text-xs placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/50 outline-none"
                                     required
-                                    disabled={!isDefaultAdmin}
                                 />
-                                {/* Password input with visibility toggle */}
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                                    Initial Password
+                                </label>
                                 <div className="relative">
                                     <input
-                                        type={showPassword ? "text" : "password"} // CONDITIONAL RENDERING: Toggles between text and password input based on showPassword state
-                                        placeholder="Password"
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="••••••••"
                                         value={adminAction.password}
                                         onChange={(e) => setAdminAction({ ...adminAction, password: e.target.value })}
-                                        className="w-full p-2 bg-gray-600 border-none rounded-lg text-white focus:ring-2 focus:ring-indigo-500 pr-10"
+                                        className="w-full pl-4 pr-11 py-3 bg-slate-900/80 border border-white/10 rounded-xl text-white text-xs placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/50 outline-none"
                                         required
-                                        disabled={!isDefaultAdmin}
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
-                                        disabled={!isDefaultAdmin}
+                                        className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-white"
                                     >
-                                        {/* CONDITIONAL RENDERING: Shows eye icon (show/hide password) based on showPassword state */}
-                                        {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                                        {showPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
                                     </button>
                                 </div>
-                                {/* Checkbox to assign admin role */}
-                                <label className="flex items-center text-gray-300">
-                                    <input
-                                        type="checkbox"
-                                        checked={adminAction.isAdmin}
-                                        onChange={(e) => setAdminAction({ ...adminAction, isAdmin: e.target.checked })}
-                                        className="mr-2 accent-indigo-500"
-                                        disabled={!isDefaultAdmin}
-                                    />
-                                    Is Admin?
-                                </label>
-                            </>
-                        )}
-                        {/* Submit button, disabled for non-default admins */}
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            type="submit"
-                            className="w-full bg-gradient-to-r from-green-600 to-green-700 p-2 rounded-lg text-white hover:from-green-700 hover:to-green-800 transition-all"
-                            disabled={!isDefaultAdmin}
-                        >
-                            Create User
-                        </motion.button>
-                    </form>
-                </motion.div>
-            </div>
+                            </div>
 
-            {/* Feedback Management Section */}
-            <div className="mt-8">
-                <h4 className="text-xl text-gray-200 font-semibold mb-4">Feedback Management</h4>
-                {/* CONDITIONAL RENDERING: Shows feedback management UI only if current user is an admin */}
-                {currentUser && currentUser.isAdmin && (
-                    <div className="bg-gray-700 p-4 rounded-lg shadow-md mb-4">
-                        {/* CONDITIONAL RENDERING: Shows search and delete controls only for default admin */}
-                        {isDefaultAdmin ? (
-                            <>
-                                <div className="flex justify-between items-center mb-4">
-                                    <div className="relative">
-                                        <input
-                                            type="text"
-                                            value={filter}
-                                            onChange={(e) => setFilter(e.target.value)}
-                                            onKeyDown={handleKeyPress}
-                                            placeholder="Filter by username or feedback..."
-                                            className="w-64 p-2 bg-gray-600 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-10"
-                                        />
-                                        <button
-                                            onClick={handleFilter}
-                                            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
-                                        >
-                                            <FiSearch size={20} />
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className="flex space-x-4 mb-4">
-                                    <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        onClick={handleDeleteAllFeedbacks}
-                                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
-                                    >
-                                        Delete All Feedbacks
-                                    </motion.button>
-                                </div>
-                            </>
-                        ) : (
-                            <p className="text-gray-400 italic">Only default admin can manage feedbacks.</p>
-                        )}
-                    </div>
-                )}
-                {/* CONDITIONAL RENDERING: Shows feedback list if there are feedbacks, otherwise displays a message */}
-                {feedbacks.length > 0 ? (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="bg-gray-700 p-4 rounded-lg shadow-md overflow-y-auto max-h-64"
-                    >
-                        {feedbacks.map((fb, index) => (
-                            <motion.div
-                                key={fb._id || fb.id || index}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="bg-gray-800 p-3 rounded-md mb-3 flex justify-between items-start"
+                            <div className="flex items-center gap-3 pt-2">
+                                <input
+                                    type="checkbox"
+                                    id="isAdminCheck"
+                                    checked={adminAction.isAdmin}
+                                    onChange={(e) => setAdminAction({ ...adminAction, isAdmin: e.target.checked })}
+                                    className="w-4 h-4 rounded bg-slate-900 border-white/20 text-indigo-600 focus:ring-indigo-500/50"
+                                />
+                                <label htmlFor="isAdminCheck" className="text-xs text-slate-300 cursor-pointer">
+                                    Grant Administrator Privileges (Can view global audit data)
+                                </label>
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="w-full mt-4 py-3.5 px-4 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold text-xs rounded-xl shadow-lg shadow-indigo-600/30 transition-all"
                             >
-                                <div>
-                                    <p className="text-gray-300">
-                                        <strong>{fb.username}</strong> - {new Date(fb.timestamp).toLocaleString()}
-                                    </p>
-                                    <p className="text-gray-400 mt-1">{fb.feedback}</p>
-                                </div>
-                                {/* CONDITIONAL RENDERING: Shows delete button for each feedback only for default admin */}
-                                {isDefaultAdmin && (
-                                    <motion.button
-                                        whileHover={{ scale: 1.1, color: "#ef4444" }}
-                                        whileTap={{ scale: 0.9 }}
-                                        onClick={() => handleDeleteFeedback(fb)}
-                                        className="text-red-400 hover:text-red-500 ml-4"
-                                    >
-                                        <FiTrash2 size={18} />
-                                    </motion.button>
-                                )}
-                            </motion.div>
-                        ))}
-                    </motion.div>
-                ) : (
-                    <p className="text-gray-400 italic">No feedbacks yet.</p>
+                                Create Account
+                            </button>
+                        </form>
+                    </div>
                 )}
             </div>
         </motion.div>

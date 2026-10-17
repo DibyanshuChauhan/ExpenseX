@@ -1,94 +1,82 @@
 /* eslint-disable no-unused-vars */
-import React from "react"; // Imports React for component creation
-import { motion } from "framer-motion"; // Imports motion for animations
-import { FiSend, FiX } from "react-icons/fi"; // Imports icons for Send and Close buttons
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiSend, FiX, FiMessageSquare } from "react-icons/fi";
 
-// SendFeedbackModal component displays a modal for users to submit feedback
-// Props:
-// - show: Boolean to control modal visibility
-// - onClose: Function to close the modal
-// - feedback: String containing the current feedback text
-// - setFeedback: Function to update the feedback state
-// - handleFeedbackSubmit: Function to process and send the feedback
-// - currentUser: Object with user details, specifically the username
 const SendFeedbackModal = ({ show, onClose, feedback, setFeedback, handleFeedbackSubmit, currentUser }) => {
-    // Returns null if the modal should not be displayed
     if (!show) return null;
 
     return (
-        // Outer overlay dims the background and centers the modal
-        <motion.div
-            initial={{ opacity: 0 }} // Starts with zero opacity
-            animate={{ opacity: 1 }} // Fades in to full opacity
-            exit={{ opacity: 0 }} // Fades out when closing
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto"
-            onClick={onClose} // Closes modal when clicking outside
-        >
-             {/* Inner modal container with animation and styling */}
+        <AnimatePresence>
             <motion.div
-                initial={{ scale: 0.7, y: 50 }} // Starts scaled down and below
-                animate={{ scale: 1, y: 0 }} // Scales up and moves to center
-                exit={{ scale: 0.7, y: 50 }} // Scales down and moves down on exit
-                transition={{ type: "spring", damping: 15, stiffness: 100 }} // Applies spring animation
-                className="bg-gradient-to-br from-gray-800 to-gray-900 bg-opacity-95 backdrop-blur-md p-6 rounded-xl shadow-2xl w-full max-w-md mx-4 border border-gray-700 relative"
-                onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center z-50 p-4 overflow-y-auto"
+                onClick={onClose}
             >
-                 {/* Close button positioned at top-right */}
-                <motion.button
-                    whileHover={{ rotate: 90, scale: 1.1 }} // Rotates and enlarges on hover
-                    whileTap={{ scale: 0.9 }} // Slightly shrinks on click
-                    onClick={onClose} // Triggers modal closure
-                    className="absolute top-4 right-4 text-gray-400 hover:text-white transition-all"
+                <motion.div
+                    initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                    transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                    className="glass-panel-elevated p-6 sm:p-8 rounded-3xl w-full max-w-lg relative border border-white/10 shadow-2xl"
+                    onClick={(e) => e.stopPropagation()}
                 >
-                     {/* Displays the close icon */}
-                    <FiX size={20} /> 
-                </motion.button>
-                 {/* Title of the feedback modal */}
-                <h3 className="text-xl font-semibold text-white mb-4 text-center">Send Your Feedback</h3>
-                 {/* Displays the logged-in username */}
-                <p className="text-gray-400 text-sm mb-2">Logged in as: {currentUser?.username || "Guest"}</p>
-                 {/* Form for submitting feedback */}
-                <form onSubmit={handleFeedbackSubmit} className="space-y-4">
-                     {/* Textarea for user feedback input */}
-                    <textarea
-                        value={feedback}
-                        onChange={(e) => setFeedback(e.target.value)} // Updates feedback state
-                        placeholder="Your feedback here..."
-                        className="w-full p-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none placeholder-gray-400"
-                        rows="5"
-                        required // Ensures input is provided
-                    />
-                     {/* Container for action buttons */}
-                    <div className="flex justify-end space-x-4">
-                         {/* Cancel button to close the modal */}
-                        <motion.button
-                            whileHover={{ scale: 1.05, backgroundColor: "#4B5563" }} // Enlarges and darkens on hover
-                            whileTap={{ scale: 0.95 }} // Slightly shrinks on click
-                            type="button"
-                            onClick={onClose} // Triggers modal closure
-                            className="px-4 py-2 bg-gray-600 text-white rounded-lg transition-all"
-                        >
-                            Cancel
-                        </motion.button>
-                         {/* Submit button to send feedback */}
-                        <motion.button
-                            whileHover={{ scale: 1.05, backgroundColor: "#10B981" }} // Enlarges and brightens on hover
-                            whileTap={{ scale: 0.95 }} // Slightly shrinks on click
-                            type="submit"
-                            className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg transition-all"
-                            disabled={!feedback.trim()} // Disables if input is empty or whitespace
-                        >
-                             {/* Displays the send icon */}
-                            <FiSend size={16} />
-                            {/* Displays the send text  */}
-                            <span>Send</span>  
-                        </motion.button>
+                    {/* Close button */}
+                    <button
+                        onClick={onClose}
+                        className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+                    >
+                        <FiX size={18} />
+                    </button>
+
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                            <FiMessageSquare size={18} />
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold text-white tracking-tight">
+                                Send Product Feedback
+                            </h3>
+                            <p className="text-xs text-slate-400">
+                                Submitting as <span className="text-indigo-400 font-semibold">{currentUser?.username || "Guest"}</span>
+                            </p>
+                        </div>
                     </div>
-                </form>
+
+                    <form onSubmit={handleFeedbackSubmit} className="space-y-4">
+                        <textarea
+                            value={feedback}
+                            onChange={(e) => setFeedback(e.target.value)}
+                            placeholder="Share suggestions, bugs, or feature requests with the administrator..."
+                            className="w-full p-4 bg-slate-900/80 text-white border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 resize-none placeholder-slate-500 text-xs leading-relaxed"
+                            rows="5"
+                            required
+                        />
+
+                        <div className="flex items-center justify-end gap-3 pt-2">
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={!feedback.trim()}
+                                className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-indigo-600/30 transition-all disabled:opacity-50"
+                            >
+                                <FiSend size={13} />
+                                <span>Submit Feedback</span>
+                            </button>
+                        </div>
+                    </form>
+                </motion.div>
             </motion.div>
-        </motion.div>
+        </AnimatePresence>
     );
 };
 
-// Exports the SendFeedbackModal component for use in the application
 export default SendFeedbackModal;

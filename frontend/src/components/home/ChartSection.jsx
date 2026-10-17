@@ -1,5 +1,5 @@
 import React from "react";
-import { Bar } from "react-chartjs-2"; // Imports the Bar chart component from react-chartjs-2
+import { Bar } from "react-chartjs-2";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -8,87 +8,168 @@ import {
     Title,
     Tooltip,
     Legend,
-} from "chart.js"; // Imports necessary Chart.js components for rendering the bar chart
+} from "chart.js";
+import { FaChartColumn } from "react-icons/fa6";
 
-// Registers Chart.js components to enable bar chart functionality
-// CategoryScale: For x-axis labels (e.g., categories or time periods)
-// LinearScale: For y-axis numeric values
-// BarElement: For rendering bars
-// Title, Tooltip, Legend: For chart title, tooltips, and legend
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-// ChartSection component
-// Purpose: Displays a bar chart showing expense trends (weekly or monthly) alongside budget, with conditional rendering for data validation
-// Props:
-// - viewType: String indicating the time period for the chart ("monthly" or "weekly")
-// - getChartData: Function that returns chart data (labels and datasets) for rendering
 const ChartSection = ({ viewType, getChartData }) => {
-    // Chart configuration options to customize appearance and behavior
+    const rawChartData = getChartData();
+
+    // Check if chartData has meaningful data
+    const hasData = 
+        rawChartData && 
+        rawChartData.labels && 
+        rawChartData.labels.length > 0 && 
+        rawChartData.labels[0] !== "No Data" &&
+        rawChartData.datasets && 
+        rawChartData.datasets[0] &&
+        rawChartData.datasets[0].data && 
+        rawChartData.datasets[0].data.some(val => val > 0);
+
+    // Enhanced chart styling with rounded corners & sleek colors
+    const chartData = {
+        labels: rawChartData?.labels || ["No Data"],
+        datasets: (rawChartData?.datasets || []).map((ds, idx) => {
+            if (idx === 0) {
+                // Expenses
+                return {
+                    ...ds,
+                    backgroundColor: "rgba(99, 102, 241, 0.75)",
+                    borderColor: "rgba(129, 140, 248, 1)",
+                    borderWidth: 1.5,
+                    borderRadius: 8,
+                    hoverBackgroundColor: "rgba(99, 102, 241, 0.95)",
+                };
+            }
+            if (idx === 1) {
+                // Budget
+                return {
+                    ...ds,
+                    backgroundColor: "rgba(16, 185, 129, 0.45)",
+                    borderColor: "rgba(52, 211, 153, 0.9)",
+                    borderWidth: 1.5,
+                    borderRadius: 8,
+                    hoverBackgroundColor: "rgba(16, 185, 129, 0.65)",
+                };
+            }
+            // Remaining
+            return {
+                ...ds,
+                backgroundColor: "rgba(245, 158, 11, 0.45)",
+                borderColor: "rgba(251, 191, 36, 0.9)",
+                borderWidth: 1.5,
+                borderRadius: 8,
+                hoverBackgroundColor: "rgba(245, 158, 11, 0.65)",
+            };
+        }),
+    };
+
     const chartOptions = {
-        responsive: true, // Ensures the chart adapts to container size (responsive design)
+        responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
-                position: "top", // Places the legend at the top of the chart
-                labels: { color: "white" }, // Sets legend labels to white for visibility on dark background
+                position: "top",
+                align: "end",
+                labels: {
+                    color: "#94a3b8",
+                    font: { family: "'Plus Jakarta Sans', sans-serif", size: 12, weight: 600 },
+                    usePointStyle: true,
+                    pointStyle: "circle",
+                    padding: 16,
+                },
             },
             title: {
-                display: true, // Shows the chart title
-                // Dynamically sets title based on viewType ("Monthly" or "Weekly")
-                text: `${viewType === "monthly" ? "Monthly" : "Weekly"} Expense Trends with Budget`,
-                color: "white", // White title text for contrast
+                display: false,
+            },
+            tooltip: {
+                backgroundColor: "rgba(15, 23, 42, 0.92)",
+                titleColor: "#ffffff",
+                bodyColor: "#cbd5e1",
+                titleFont: { family: "'Plus Jakarta Sans', sans-serif", size: 13, weight: 700 },
+                bodyFont: { family: "'Plus Jakarta Sans', sans-serif", size: 12 },
+                borderColor: "rgba(255, 255, 255, 0.1)",
+                borderWidth: 1,
+                padding: 12,
+                cornerRadius: 10,
+                boxPadding: 6,
+                usePointStyle: true,
+                callbacks: {
+                    label: function (context) {
+                        return ` ${context.dataset.label}: ₹${context.parsed.y.toLocaleString()}`;
+                    },
+                },
             },
         },
-        // Configures axis styling
         scales: {
-            x: { ticks: { color: "white" } }, // White x-axis labels (e.g., categories or time periods)
+            x: {
+                ticks: {
+                    color: "#94a3b8",
+                    font: { family: "'Plus Jakarta Sans', sans-serif", size: 11, weight: 500 },
+                },
+                grid: {
+                    display: false,
+                },
+                border: {
+                    color: "rgba(255, 255, 255, 0.1)",
+                },
+            },
             y: {
-                ticks: { color: "white" }, // White y-axis labels (e.g., amounts)
-                beginAtZero: true, // Forces y-axis to start at 0 for clear visualization
+                ticks: {
+                    color: "#94a3b8",
+                    font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 },
+                    callback: (value) => `₹${value.toLocaleString()}`,
+                },
+                grid: {
+                    color: "rgba(255, 255, 255, 0.05)",
+                },
+                border: {
+                    dash: [4, 4],
+                    color: "rgba(255, 255, 255, 0.1)",
+                },
+                beginAtZero: true,
             },
         },
     };
 
-    // Retrieves chart data by calling the provided getChartData function
-    // Expected format: { labels: string[], datasets: { label: string, data: number[] }[] }
-    const chartData = getChartData();
-
-    // Validates chart data to ensure it’s usable for rendering
-    // Checks if chartData exists, has non-empty labels, and has at least one dataset
-    // Acts as a safety check to prevent rendering an empty or invalid chart
-    const isValidChartData = chartData && chartData.labels && chartData.labels.length > 0 && chartData.datasets && chartData.datasets.length > 0;
-
     return (
-        // Container div for the chart section with top margin for spacing
-        <div className="mt-8">
-            {/* Section title, centered and styled for prominence */}
-            <h3 className="text-2xl font-semibold mb-4 text-center text-white">
-                Expense Trends with Budget
-            </h3>
+        <div className="p-6 rounded-2xl glass-panel relative overflow-hidden">
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-inner">
+                        <FaChartColumn size={16} />
+                    </div>
+                    <div>
+                        <h3 className="text-base font-bold text-white tracking-tight">
+                            Spending Velocity & Budget Comparison
+                        </h3>
+                        <p className="text-xs text-slate-400">
+                            {viewType === "monthly" ? "Monthly" : "Weekly"} timeline tracking vs budget limit
+                        </p>
+                    </div>
+                </div>
+            </div>
 
-            {/* Chart container with dark background, padding, rounded corners, and shadow */}
-            <div className="bg-gray-800 p-4 rounded-lg shadow-md">
-                {/* 
-                    Conditional rendering for the bar chart
-                    Here’s where we decide what to show based on the chart data’s validity.
-                    We use `isValidChartData` to check if the data from `getChartData()` is good to go—meaning it has labels (like categories or time periods) and at least one dataset with numbers to plot.
-                    If `isValidChartData` is true, we render the <Bar> component with the chart data and options, displaying a nice bar chart of expense trends.
-                    If it’s false (e.g., no expenses added yet, or `getChartData()` returns null or empty data), we skip the chart and show a clear message: “No expense data available yet. Add some expenses to see the trends!”
-                    This approach prevents rendering a blank or broken chart, which could confuse users or cause errors. Instead, the message guides users to add expenses, making the UI intuitive and helpful.
-                */}
-                {isValidChartData ? (
-                    // Renders the Bar chart with the provided data and configuration options
+            <div className="h-72 w-full">
+                {hasData ? (
                     <Bar data={chartData} options={chartOptions} />
                 ) : (
-                    // Displays a fallback message when no valid data is available
-                    // Centered, gray text, flexbox for vertical and horizontal alignment
-                    <p className="text-center text-gray-400 h-full flex items-center justify-center">
-                        No expense data available yet. Add some expenses to see the trends!
-                    </p>
+                    <div className="h-full flex flex-col items-center justify-center text-center p-6 rounded-xl border border-dashed border-white/10 bg-slate-900/40">
+                        <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-3">
+                            <FaChartColumn size={22} />
+                        </div>
+                        <p className="text-sm font-semibold text-slate-300">
+                            No Visual Analytics Available Yet
+                        </p>
+                        <p className="text-xs text-slate-500 mt-1 max-w-sm">
+                            Add your first expense or set a budget above to generate interactive trend curves.
+                        </p>
+                    </div>
                 )}
             </div>
         </div>
     );
 };
 
-// Exports the ChartSection component for use in the application
 export default ChartSection;

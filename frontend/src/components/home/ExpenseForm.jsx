@@ -1,17 +1,37 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion"; // For form and dropdown animations
-import { FaChevronDown } from "react-icons/fa"; // Icon for dropdown toggle
-import DatePicker from "react-datepicker"; // Component for selecting dates
-import "react-datepicker/dist/react-datepicker.css"; // Styles for the date picker
-import { toast } from "react-toastify"; // For displaying notification messages
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+    FaChevronDown, 
+    FaPlus, 
+    FaUtensils, 
+    FaPlane, 
+    FaBagShopping, 
+    FaFilm, 
+    FaFileInvoiceDollar, 
+    FaHeartPulse, 
+    FaGraduationCap, 
+    FaCartShopping, 
+    FaHouse, 
+    FaCalendarDays 
+} from "react-icons/fa6";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { toast } from "react-toastify";
 
-// ExpenseForm component
-// Purpose: Provides a form for users to add new expenses, with fields for amount, category, date, and description, and a dropdown for category selection
-// Props:
-// - addExpense: Function passed from parent to handle adding the new expense to the application's data
-const ExpenseForm = ({ addExpense }) => {
-    // Predefined list of expense categories for the dropdown
+const categoryIconMap = {
+    Food: FaUtensils,
+    Travel: FaPlane,
+    Shopping: FaBagShopping,
+    Entertainment: FaFilm,
+    Bills: FaFileInvoiceDollar,
+    Health: FaHeartPulse,
+    Education: FaGraduationCap,
+    Groceries: FaCartShopping,
+    Rent: FaHouse,
+};
+
+const ExpenseForm = ({ addExpense, disabled = false }) => {
     const categories = [
         "Food", "Travel", "Shopping", "Entertainment", "Bills", "Health", "Education", "Groceries", "Rent",
         "Transportation", "Subscriptions", "Savings", "Investments", "Gifts & Donations", "Personal Care",
@@ -19,46 +39,32 @@ const ExpenseForm = ({ addExpense }) => {
         "Clothing", "Electronics", "Events & Parties", "Medicines", "Other"
     ];
 
-    // State to manage form input values
-    // Initialized with empty/default values, with date set to today
     const [form, setForm] = useState({
-        amount: "", // Expense amount (string to handle input)
-        category: "", // Selected or typed category
-        date: new Date(), // Default to current date
-        description: "", // Expense description
+        amount: "",
+        category: "",
+        date: new Date(),
+        description: "",
     });
 
-    // State to toggle the category dropdown's visibility
     const [isOpen, setIsOpen] = useState(false);
-
-    // State to store filtered categories based on user input
-    // Initialized with the full categories list
     const [filteredCategories, setFilteredCategories] = useState(categories);
 
-    // Handles changes to the category input
-    // Updates the form's category and filters the dropdown list
     const handleCategoryChange = (e) => {
         const value = e.target.value;
-        setForm({ ...form, category: value }); // Updates category in form state
-        // Filters categories based on case-insensitive match with input
+        setForm({ ...form, category: value });
         setFilteredCategories(
             categories.filter((cat) => cat.toLowerCase().includes(value.toLowerCase()))
         );
     };
 
-    // Handles selecting a category from the dropdown
-    // Sets the selected category in the form and closes the dropdown
     const selectCategory = (cat) => {
         setForm({ ...form, category: cat });
         setIsOpen(false);
     };
 
-    // Handles form submission
     const handleSubmit = (e) => {
-        e.preventDefault(); // Prevents page refresh
-        // Validates that all fields are filled
+        e.preventDefault();
         if (!form.amount || !form.category || !form.date || !form.description) {
-            // Shows error toast if any field is empty
             toast.error("Please fill all fields before adding an expense!", {
                 position: "top-right",
                 autoClose: 3000,
@@ -67,177 +73,202 @@ const ExpenseForm = ({ addExpense }) => {
             });
             return;
         }
-        // Calls addExpense with form data to add the expense
         addExpense(form);
-        // Resets form to initial state
         setForm({ amount: "", category: "", date: new Date(), description: "" });
-        // Resets filtered categories to full list
         setFilteredCategories(categories);
     };
 
-    // Effect to close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (e) => {
-            // Checks if dropdown is open and click is outside dropdown container
             if (isOpen && !e.target.closest(".dropdown-container")) {
                 setIsOpen(false);
             }
         };
-        // Adds event listener for mouse clicks
         document.addEventListener("mousedown", handleClickOutside);
-        // Cleanup: Removes event listener on unmount
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [isOpen]); // Re-runs when isOpen changes
+    }, [isOpen]);
 
-    // Handles date selection from DatePicker
     const handleDateChange = (date) => {
-        setForm({ ...form, date }); // Updates date in form state
+        setForm({ ...form, date });
     };
 
-    // Handles amount input and validates for non-negative numbers
     const handleAmountChange = (e) => {
         const value = e.target.value;
         const numValue = parseFloat(value);
-        // Allows empty input or non-negative numbers
         if (value === "" || (numValue >= 0 && !isNaN(numValue))) {
             setForm({ ...form, amount: value });
         } else {
-            // Shows error toast for negative amounts
             toast.error("Amount cannot be negative!", {
                 position: "top-right",
                 autoClose: 3000,
                 theme: "dark",
                 className: "navbar-poppins",
             });
-            setForm({ ...form, amount: "" }); // Resets amount field
+            setForm({ ...form, amount: "" });
         }
     };
 
     return (
-        // Animated form container with Framer Motion
-        // Fades in and slides up on mount
         <motion.form
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.4 }}
             onSubmit={handleSubmit}
-            className="bg-gray-800/80 backdrop-blur-md p-6 rounded-xl shadow-2xl border border-gray-700"
+            className="p-6 rounded-2xl glass-panel relative overflow-hidden"
         >
-            {/* Input field for expense amount */}
-            <input
-                type="number" // Restricts to numeric input
-                placeholder="Amount (₹)" // Placeholder with rupee symbol
-                value={form.amount} // Controlled input
-                onChange={handleAmountChange} // Validates and updates amount
-                className="w-full p-3 mb-4 bg-gray-700 border-none rounded-lg focus:ring-2 focus:ring-blue-500 transition text-white"
-                required // Enforces input
-            />
+            <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 shadow-inner">
+                        <FaPlus size={16} />
+                    </div>
+                    <div>
+                        <h3 className="text-base font-bold text-white tracking-tight">
+                            Record New Transaction
+                        </h3>
+                        <p className="text-xs text-slate-400">
+                            Log spending details with instant categorization
+                        </p>
+                    </div>
+                </div>
+            </div>
 
-            {/* Category dropdown section */}
-            <div className="relative mb-4 dropdown-container">
-                <div className="flex items-center">
-                    {/* Input for typing or selecting category */}
-                    <input
-                        type="text" // Allows typing for filtering
-                        placeholder="Category"
-                        value={form.category} // Controlled input
-                        onChange={handleCategoryChange} // Filters categories
-                        onFocus={() => setIsOpen(true)} // Opens dropdown on focus
-                        className="w-full p-3 bg-gray-700 border-none rounded-lg focus:ring-2 focus:ring-blue-500 transition text-white"
-                        required
-                    />
-                    {/* Dropdown toggle button with animated icon */}
-                    <motion.button
-                        type="button" // Prevents form submission
-                        onClick={() => setIsOpen(!isOpen)} // Toggles dropdown
-                        className="absolute right-2 p-2 text-gray-400"
-                        animate={{ rotate: isOpen ? 180 : 0 }} // Rotates icon when open
-                        transition={{ duration: 0.3 }}
-                    >
-                        <FaChevronDown />
-                    </motion.button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                {/* Amount Input */}
+                <div>
+                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                        Amount (₹)
+                    </label>
+                    <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold">
+                            ₹
+                        </div>
+                        <input
+                            type="number"
+                            placeholder="0.00"
+                            value={form.amount}
+                            onChange={handleAmountChange}
+                            disabled={disabled}
+                            required
+                            className="w-full pl-8 pr-4 py-3 bg-slate-900/70 border border-white/10 rounded-xl text-white placeholder-slate-500 font-mono focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all text-sm disabled:opacity-50"
+                        />
+                    </div>
                 </div>
 
-                {/* 
-                    Conditional rendering for the category dropdown
-                    This controls whether the category dropdown is visible.
-                    The `isOpen` state is `true` when the user focuses the category input or clicks the dropdown button.
-                    If `isOpen` is `true`, we render an animated `<motion.ul>` containing category suggestions, wrapped in `AnimatePresence` for smooth entry/exit animations.
-                    If `isOpen` is `false`, nothing is rendered, keeping the form clean and uncluttered.
-                    The `AnimatePresence` ensures the dropdown slides in and out smoothly, enhancing the user experience with a polished feel.
-                */}
-                <AnimatePresence>
-                    {isOpen && (
-                        <motion.ul
-                            initial={{ opacity: 0, y: -10 }} // Starts slightly above and invisible
-                            animate={{ opacity: 1, y: 0 }} // Slides down and fades in
-                            exit={{ opacity: 0, y: -10 }} // Slides up and fades out
-                            transition={{ duration: 0.2 }} // Animation duration
-                            className="absolute z-10 w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+                {/* Category Dropdown */}
+                <div className="relative dropdown-container">
+                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                        Category
+                    </label>
+                    <div className="relative flex items-center">
+                        <input
+                            type="text"
+                            placeholder="Select or type category..."
+                            value={form.category}
+                            onChange={handleCategoryChange}
+                            onFocus={() => setIsOpen(true)}
+                            disabled={disabled}
+                            required
+                            className="w-full pl-3.5 pr-10 py-3 bg-slate-900/70 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all text-sm disabled:opacity-50"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setIsOpen(!isOpen)}
+                            disabled={disabled}
+                            className="absolute right-3 p-1 text-slate-400 hover:text-white transition-colors"
                         >
-                            {/* 
-                                Conditional rendering for dropdown content
-                                Here, we decide what to show inside the dropdown based on `filteredCategories`.
-                                If `filteredCategories` has items (categories matching the user’s input, like typing “Foo” to get “Food”), we map over them to create clickable `<motion.li>` elements.
-                                Each list item highlights on hover, and clicking it calls `selectCategory` to set the category and close the dropdown.
-                                If `filteredCategories` is empty (e.g., typing “xyz” with no matches), we render a single `<li>` with “No matching categories” to inform the user.
-                                This ensures the dropdown always provides clear feedback, either with options or a message, making the form intuitive and user-friendly.
-                            */}
-                            {filteredCategories.length > 0 ? (
-                                filteredCategories.map((cat, index) => (
-                                    <motion.li
-                                        key={index} // Unique key for React
-                                        whileHover={{ backgroundColor: "#4B5563", color: "#fff" }} // Hover animation
-                                        onClick={() => selectCategory(cat)} // Sets category and closes dropdown
-                                        className="p-3 cursor-pointer text-gray-200 hover:bg-gray-600 transition-colors"
-                                    >
-                                        {cat}
-                                    </motion.li>
-                                ))
-                            ) : (
-                                <li className="p-3 text-gray-400">No matching categories</li>
-                            )}
-                        </motion.ul>
-                    )}
-                </AnimatePresence>
+                            <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                                <FaChevronDown size={14} />
+                            </motion.div>
+                        </button>
+                    </div>
+
+                    <AnimatePresence>
+                        {isOpen && (
+                            <motion.ul
+                                initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                                transition={{ duration: 0.15 }}
+                                className="absolute z-30 w-full mt-2 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl max-h-56 overflow-y-auto p-1.5 space-y-0.5"
+                            >
+                                {filteredCategories.length > 0 ? (
+                                    filteredCategories.map((cat, index) => {
+                                        const IconComp = categoryIconMap[cat] || FaBagShopping;
+                                        return (
+                                            <li
+                                                key={index}
+                                                onClick={() => selectCategory(cat)}
+                                                className="flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer text-xs font-medium text-slate-200 hover:bg-indigo-600/30 hover:text-white hover:border-indigo-500/30 transition-all"
+                                            >
+                                                <span className="w-6 h-6 rounded-md bg-white/5 flex items-center justify-center text-indigo-400">
+                                                    <IconComp size={12} />
+                                                </span>
+                                                <span>{cat}</span>
+                                            </li>
+                                        );
+                                    })
+                                ) : (
+                                    <li className="p-3 text-xs text-slate-400 text-center">
+                                        No matching categories
+                                    </li>
+                                )}
+                            </motion.ul>
+                        )}
+                    </AnimatePresence>
+                </div>
             </div>
 
-            {/* Date picker for selecting expense date */}
-            <div className="mb-4">
-                <DatePicker
-                    selected={form.date} // Current selected date
-                    onChange={handleDateChange} // Updates date in form state
-                    dateFormat="dd/MM/yyyy" // Date format
-                    className="w-full p-3 bg-gray-700 border-none rounded-lg focus:ring-2 focus:ring-blue-500 transition text-white"
-                    placeholderText="Select Date"
-                    required
-                    wrapperClassName="w-full" // Ensures full width
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                {/* Date Picker */}
+                <div>
+                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                        <FaCalendarDays size={12} className="text-indigo-400" />
+                        <span>Date</span>
+                    </label>
+                    <DatePicker
+                        selected={form.date}
+                        onChange={handleDateChange}
+                        dateFormat="dd/MM/yyyy"
+                        disabled={disabled}
+                        className="w-full px-3.5 py-3 bg-slate-900/70 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all text-sm disabled:opacity-50"
+                        placeholderText="Select Date"
+                        required
+                        wrapperClassName="w-full"
+                    />
+                </div>
+
+                {/* Description */}
+                <div>
+                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                        Description / Note
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="What was this expense for?"
+                        value={form.description}
+                        onChange={(e) => setForm({ ...form, description: e.target.value })}
+                        disabled={disabled}
+                        required
+                        className="w-full px-3.5 py-3 bg-slate-900/70 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all text-sm disabled:opacity-50"
+                    />
+                </div>
             </div>
 
-            {/* Textarea for expense description */}
-            <textarea
-                placeholder="Description"
-                value={form.description} // Controlled input
-                onChange={(e) => setForm({ ...form, description: e.target.value })} // Updates description
-                className="w-full p-3 mb-4 bg-gray-700 border-none rounded-lg focus:ring-2 focus:ring-blue-500 transition text-white"
-                required
-            />
-
-            {/* Submit button with animations */}
+            {/* Submit Button */}
             <motion.button
-                whileHover={{ scale: 1.05 }} // Scales up on hover
-                whileTap={{ scale: 0.95 }} // Scales down on click
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-3 rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-all"
+                disabled={disabled}
+                className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold text-sm rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
-                Add Expense
+                <FaPlus size={14} />
+                <span>Add Expense Transaction</span>
             </motion.button>
         </motion.form>
     );
 };
 
-// Exports the ExpenseForm component for use in the application
 export default ExpenseForm;

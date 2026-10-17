@@ -1,355 +1,451 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
-import BudgetInput from "../components/home/BudgetInput"; // For setting and displaying budget
-import ExpenseForm from "../components/home/ExpenseForm"; // For adding new expenses
-import ExpenseList from "../components/home/ExpenseList"; // For displaying expense list
-import ChartSection from "../components/home/ChartSection"; // For visualizing expense trends
-import SummarySection from "../components/home/SummarySection"; // For category-wise expense summary
-import ReportDownload from "../components/home/ReportDownload"; // For downloading reports
-import Footer from "../components/shared/Footer"; // Shared footer component
-import { motion } from "framer-motion"; // For button animations
-import { toast } from "react-toastify"; // For notification messages
-import "react-toastify/dist/ReactToastify.css"; // Toast notification styles
-
+import BudgetInput from "../components/home/BudgetInput";
+import ExpenseForm from "../components/home/ExpenseForm";
+import ExpenseList from "../components/home/ExpenseList";
+import ChartSection from "../components/home/ChartSection";
+import SummarySection from "../components/home/SummarySection";
+import ReportDownload from "../components/home/ReportDownload";
+import Footer from "../components/shared/Footer";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { 
+    FaWallet, 
+    FaArrowTrendDown, 
+    FaArrowTrendUp, 
+    FaRotateLeft, 
+    FaShieldHeart, 
+    FaCircleExclamation 
+} from "react-icons/fa6";
+import { HiSparkles } from "react-icons/hi2";
 import { api } from "../services/api";
 
-// Home component
-// Purpose: Serves as the main dashboard, integrating budget input, expense form, expense list, chart, summary, report download, and footer
-// Props:
-// - currentUser: Object containing user info (e.g., username), or null if not logged in
 const Home = ({ currentUser }) => {
-  // Extracts username from currentUser, defaults to "default_user" if not available
-  const username = currentUser?.username || "default_user";
+    const username = currentUser?.username || "default_user";
 
-  // State for expenses
-  const [expenses, setExpenses] = useState([]);
+    const [expenses, setExpenses] = useState([]);
+    const [budget, setBudget] = useState("");
+    const [viewType, setViewType] = useState("monthly");
 
-  // State for budget
-  const [budget, setBudget] = useState("");
+    useEffect(() => {
+        if (currentUser?.username) {
+            api.expenses
+                .getByUser(currentUser.username)
+                .then((res) => {
+                    if (res.success && Array.isArray(res.expenses)) {
+                        setExpenses(res.expenses);
+                    }
+                })
+                .catch((err) => console.error("Error loading expenses:", err));
 
-  // State for chart view type ("monthly" or "weekly")
-  const [viewType, setViewType] = useState("monthly");
+            api.expenses
+                .getBudget(currentUser.username)
+                .then((res) => {
+                    if (res.success && res.budget !== undefined) {
+                        setBudget(res.budget);
+                    }
+                })
+                .catch((err) => console.error("Error loading budget:", err));
+        } else {
+            setExpenses([]);
+            setBudget("");
+        }
+    }, [currentUser]);
 
-  // Fetch expenses and budget from backend when user changes
-  useEffect(() => {
-    if (currentUser?.username) {
-      // Fetch user's expenses
-      api.expenses
-        .getByUser(currentUser.username)
-        .then((res) => {
-          if (res.success && Array.isArray(res.expenses)) {
-            setExpenses(res.expenses);
-          }
-        })
-        .catch((err) => console.error("Error loading expenses:", err));
-
-      // Fetch user's budget
-      api.expenses
-        .getBudget(currentUser.username)
-        .then((res) => {
-          if (res.success && res.budget !== undefined) {
-            setBudget(res.budget);
-          }
-        })
-        .catch((err) => console.error("Error loading budget:", err));
-    } else {
-      setExpenses([]);
-      setBudget("");
-    }
-  }, [currentUser]);
-
-  // Adds a new expense with validation
-  const addExpense = async (expense) => {
-    // Checks if user is logged in
-    if (!currentUser) {
-      toast.error("Please log in to add an expense!", { ...toastOptions });
-      return;
-    }
-
-    // Validates expense fields
-    if (!expense.amount || !expense.category || !expense.date || !expense.description) {
-      toast.error("Please fill all fields before adding an expense!", { ...toastOptions });
-      return;
-    }
-
-    try {
-      const formattedDate = expense.date instanceof Date ? expense.date.toISOString() : new Date(expense.date).toISOString();
-      const res = await api.expenses.add({
-        ...expense,
-        date: formattedDate,
-        username: currentUser.username,
-      });
-
-      if (res.success && res.expense) {
-        const updatedExpenses = [...expenses, res.expense];
-        setExpenses(updatedExpenses);
-
-        // Warns if total spent exceeds budget
-        const totalSpent = updatedExpenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
-        const currentBudget = budget !== "" ? parseFloat(budget) : 0;
-        if (currentBudget > 0 && totalSpent > currentBudget) {
-          toast.warning("Warning: You are exceeding your budget!", { ...toastOptions });
+    const addExpense = async (expense) => {
+        if (!currentUser) {
+            toast.error("Please log in to add an expense!", { ...toastOptions });
+            return;
         }
 
-        toast.success(res.message || "Expense added successfully!", { ...toastOptions });
-      }
-    } catch (err) {
-      toast.error(err.message || "Failed to add expense!", { ...toastOptions });
-    }
-  };
+        if (!expense.amount || !expense.category || !expense.date || !expense.description) {
+            toast.error("Please fill all fields before adding an expense!", { ...toastOptions });
+            return;
+        }
 
-  // Resets all expenses with confirmation dialog
-  const resetExpenses = () => {
-    // Checks if user is logged in
-    if (!currentUser) {
-      toast.error("Please log in to reset expenses!", { ...toastOptions });
-      return;
-    }
+        try {
+            const formattedDate = expense.date instanceof Date ? expense.date.toISOString() : new Date(expense.date).toISOString();
+            const res = await api.expenses.add({
+                ...expense,
+                date: formattedDate,
+                username: currentUser.username,
+            });
 
-    // Displays confirmation dialog via toast
-    toast.warn(
-      <div>
-        <p>Are you sure you want to reset all expenses? This action cannot be undone!</p>
-        <div className="mt-2 flex justify-end space-x-2">
-          <button
-            onClick={async () => {
-              toast.dismiss();
-              try {
-                const res = await api.expenses.reset(currentUser.username);
-                if (res.success) {
-                  setExpenses([]); // Clears expenses state
-                  toast.success(res.message || "All expenses reset successfully!", { ...toastOptions });
+            if (res.success && res.expense) {
+                const updatedExpenses = [...expenses, res.expense];
+                setExpenses(updatedExpenses);
+
+                const totalSpent = updatedExpenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
+                const currentBudget = budget !== "" ? parseFloat(budget) : 0;
+                if (currentBudget > 0 && totalSpent > currentBudget) {
+                    toast.warning("Warning: You are exceeding your budget!", { ...toastOptions });
                 }
-              } catch (err) {
-                toast.error(err.message || "Failed to reset expenses!", { ...toastOptions });
-              }
-            }}
-            className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-          >
-            Yes
-          </button>
-          <button
-            onClick={() => toast.dismiss()}
-            className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700"
-          >
-            No
-          </button>
-        </div>
-      </div>,
-      {
+
+                toast.success(res.message || "Expense added successfully!", { ...toastOptions });
+            }
+        } catch (err) {
+            toast.error(err.message || "Failed to add expense!", { ...toastOptions });
+        }
+    };
+
+    const resetExpenses = () => {
+        if (!currentUser) {
+            toast.error("Please log in to reset expenses!", { ...toastOptions });
+            return;
+        }
+
+        toast.warn(
+            <div>
+                <p className="font-semibold text-white mb-1">Confirm Reset All Expenses</p>
+                <p className="text-xs text-slate-300">Are you sure you want to permanently clear all your recorded expenses? This cannot be undone.</p>
+                <div className="mt-3 flex justify-end space-x-2">
+                    <button
+                        onClick={async () => {
+                            toast.dismiss();
+                            try {
+                                const res = await api.expenses.reset(currentUser.username);
+                                if (res.success) {
+                                    setExpenses([]);
+                                    toast.success(res.message || "All expenses reset successfully!", { ...toastOptions });
+                                }
+                            } catch (err) {
+                                toast.error(err.message || "Failed to reset expenses!", { ...toastOptions });
+                            }
+                        }}
+                        className="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-1.5 rounded-lg font-semibold transition-all shadow-md"
+                    >
+                        Yes, Reset
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss()}
+                        className="bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>,
+            {
+                position: "top-right",
+                autoClose: false,
+                closeOnClick: false,
+                draggable: false,
+                theme: "dark",
+                className: "navbar-poppins",
+            }
+        );
+    };
+
+    const getChartData = () => {
+        const data = {};
+        const currentBudget = budget !== "" ? parseFloat(budget) : 0;
+        const totalSpent = expenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
+        const remainingBudget = currentBudget - totalSpent;
+
+        expenses.forEach((exp) => {
+            const date = new Date(exp.date);
+            const key = viewType === "monthly"
+                ? date.toLocaleString("default", { month: "short" })
+                : `W${Math.ceil((date.getDate()) / 7)}`;
+            data[key] = (data[key] || 0) + parseFloat(exp.amount);
+        });
+
+        return {
+            labels: Object.keys(data).length > 0 ? Object.keys(data) : ["No Data"],
+            datasets: [
+                {
+                    label: "Expenses (₹)",
+                    data: Object.values(data).length > 0 ? Object.values(data) : [0],
+                },
+                {
+                    label: "Budget (₹)",
+                    data: Object.keys(data).map(() => currentBudget),
+                },
+                {
+                    label: "Remaining (₹)",
+                    data: Object.keys(data).map(() => (remainingBudget > 0 ? remainingBudget : 0)),
+                },
+            ],
+        };
+    };
+
+    const getCategorySummary = () => {
+        const summary = {};
+        expenses.forEach((exp) => {
+            summary[exp.category] = (summary[exp.category] || 0) + parseFloat(exp.amount);
+        });
+        return summary;
+    };
+
+    const handleBudgetChange = async (e) => {
+        if (!currentUser) {
+            toast.error("Please log in to set a budget!", { ...toastOptions });
+            return;
+        }
+        const value = e.target.value;
+        let targetBudget = "";
+        if (value === "") {
+            targetBudget = "";
+            setBudget("");
+        } else {
+            const numValue = parseFloat(value) || 0;
+            if (numValue < 0) {
+                toast.error("Budget cannot be negative! Setting to 0.", { ...toastOptions });
+                targetBudget = 0;
+                setBudget(0);
+            } else {
+                targetBudget = numValue;
+                setBudget(numValue);
+            }
+        }
+
+        try {
+            await api.expenses.setBudget(currentUser.username, targetBudget);
+        } catch (err) {
+            console.error("Failed to update budget on server:", err);
+        }
+    };
+
+    const totalSpent = expenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
+    const currentBudget = budget !== "" ? parseFloat(budget) : 0;
+    const remainingBudget = currentBudget - totalSpent;
+    const isOverBudget = currentBudget > 0 && totalSpent > currentBudget;
+    const spentPercent = currentBudget > 0 ? Math.round((totalSpent / currentBudget) * 100) : 0;
+
+    const downloadReport = () => {
+        if (!currentUser) {
+            toast.error("Please log in to download a report!", { ...toastOptions });
+            return;
+        }
+        const currentDate = new Date().toLocaleDateString();
+        const header = ["Date,Description,Category,Amount (₹),Budget Set (₹),Total Spent (₹),Remaining Budget (₹)"];
+        const categorySummary = getCategorySummary();
+        const summaryRows = Object.entries(categorySummary).map(([category, amount]) =>
+            `,,${category},${amount},,,`
+        );
+        const dataRows = expenses.map((exp) =>
+            `${new Date(exp.date).toLocaleDateString()},${exp.description},${exp.category},${exp.amount},${currentBudget},${totalSpent},${remainingBudget > 0 ? remainingBudget : 0}`
+        );
+        const csvContent = [
+            ...header,
+            ...dataRows,
+            ...summaryRows,
+            `,,Total Budget,${currentBudget},,,`,
+            `,,Total Spent,${totalSpent},,,`,
+            `,,Remaining Budget,${remainingBudget > 0 ? remainingBudget : 0},,,`
+        ].join("\n");
+
+        const blob = new Blob([csvContent], { type: "text/csv" });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `Expense_Report_${viewType}_${username}_${currentDate}.csv`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+
+        toast.success(`Downloaded ${viewType} expense report for ${username}!`, { ...toastOptions });
+    };
+
+    const toastOptions = {
         position: "top-right",
-        autoClose: false,
-        closeOnClick: false,
-        draggable: false,
+        autoClose: 3000,
         theme: "dark",
         className: "navbar-poppins",
-      }
-    );
-  };
-
-  // Prepares data for ChartSection
-  const getChartData = () => {
-    const data = {};
-    const currentBudget = budget !== "" ? parseFloat(budget) : 0;
-    const totalSpent = expenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
-    const remainingBudget = currentBudget - totalSpent;
-
-    // Aggregates expenses by month or week based on viewType
-    expenses.forEach((exp) => {
-      const date = new Date(exp.date);
-      const key = viewType === "monthly"
-        ? date.toLocaleString("default", { month: "long" })
-        : `Week ${Math.ceil((date.getDate()) / 7)}`;
-      data[key] = (data[key] || 0) + parseFloat(exp.amount);
-    });
-
-    // Returns formatted chart data for expenses, budget, and remaining budget
-    return {
-      labels: Object.keys(data).length > 0 ? Object.keys(data) : ["No Data"],
-      datasets: [
-        {
-          label: "Expenses (₹)",
-          data: Object.values(data).length > 0 ? Object.values(data) : [0],
-          backgroundColor: "rgba(59, 130, 246, 0.6)",
-          borderColor: "rgba(59, 130, 246, 1)",
-          borderWidth: 1,
-        },
-        {
-          label: "Budget (₹)",
-          data: Object.keys(data).map(() => currentBudget),
-          backgroundColor: "rgba(16, 185, 129, 0.6)",
-          borderColor: "rgba(16, 185, 129, 1)",
-          borderWidth: 1,
-        },
-        {
-          label: "Remaining (₹)",
-          data: Object.keys(data).map(() => (remainingBudget > 0 ? remainingBudget : 0)),
-          backgroundColor: "rgba(234, 179, 8, 0.6)",
-          borderColor: "rgba(234, 179, 8, 1)",
-          borderWidth: 1,
-        },
-      ],
     };
-  };
 
-  // Summarizes expenses by category for SummarySection
-  const getCategorySummary = () => {
-    const summary = {};
-    expenses.forEach((exp) => {
-      summary[exp.category] = (summary[exp.category] || 0) + parseFloat(exp.amount);
-    });
-    return summary;
-  };
+    return (
+        <div className="flex-1 flex flex-col min-h-screen bg-[#090d16] text-slate-100">
+            {/* Ambient Background Aura Glows */}
+            <div className="fixed top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[128px] pointer-events-none" />
+            <div className="fixed top-1/3 right-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-[140px] pointer-events-none" />
+            <div className="fixed bottom-10 left-1/3 w-96 h-96 bg-cyan-600/10 rounded-full blur-[128px] pointer-events-none" />
 
-  // Handles budget input changes with validation
-  const handleBudgetChange = async (e) => {
-    // Checks if user is logged in
-    if (!currentUser) {
-      toast.error("Please log in to set a budget!", { ...toastOptions });
-      return;
-    }
-    const value = e.target.value;
-    let targetBudget = "";
-    if (value === "") {
-      targetBudget = "";
-      setBudget("");
-    } else {
-      const numValue = parseFloat(value) || 0;
-      if (numValue < 0) {
-        toast.error("Budget cannot be negative! Setting to 0.", { ...toastOptions });
-        targetBudget = 0;
-        setBudget(0);
-      } else {
-        targetBudget = numValue;
-        setBudget(numValue);
-      }
-    }
+            <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 relative z-10 max-w-7xl">
+                {/* Dashboard Hero Header */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <div className="flex items-center gap-2 mb-1">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                                <HiSparkles size={11} /> Real-time Analytics
+                            </span>
+                        </div>
+                        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white font-['Outfit']">
+                            Dashboard - <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-white to-violet-300">
+                                {currentUser ? currentUser.username : "Guest"}
+                            </span>
+                        </h1>
+                        <p className="text-sm text-slate-400 mt-1">
+                            Track daily spending, analyze financial health, and stay within your budget limit.
+                        </p>
+                    </div>
 
-    try {
-      await api.expenses.setBudget(currentUser.username, targetBudget);
-    } catch (err) {
-      console.error("Failed to update budget on server:", err);
-    }
-  };
+                    {/* Quick Reset Action (Moved to header for clean accessibility) */}
+                    {currentUser && expenses.length > 0 && (
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={resetExpenses}
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 text-xs font-semibold shadow-sm transition-all self-start md:self-auto"
+                        >
+                            <FaRotateLeft size={13} />
+                            <span>Reset All Expenses</span>
+                        </motion.button>
+                    )}
+                </div>
 
-  // Calculates total spent and remaining budget
-  const totalSpent = expenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
-  const currentBudget = budget !== "" ? parseFloat(budget) : 0;
-  const remainingBudget = currentBudget - totalSpent;
+                {/* KPI Metrics Hero Cards (4-Column Bento Row) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    {/* Monthly Budget Card */}
+                    <div className="p-5 rounded-2xl glass-panel relative overflow-hidden group hover:border-indigo-500/30 transition-all">
+                        <div className="flex items-center justify-between mb-3">
+                            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                Allocated Budget
+                            </span>
+                            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+                                <FaWallet size={14} />
+                            </div>
+                        </div>
+                        <div className="text-2xl font-black text-white font-mono tracking-tight">
+                            ₹{currentBudget.toLocaleString()}
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-2 flex items-center gap-1">
+                            {currentBudget > 0 ? "Target limit for this month" : "No budget set yet"}
+                        </p>
+                    </div>
 
-  // Generates and downloads a CSV report
-  const downloadReport = () => {
-    // Checks if user is logged in
-    if (!currentUser) {
-      toast.error("Please log in to download a report!", { ...toastOptions });
-      return;
-    }
-    const currentDate = new Date().toLocaleDateString();
-    const header = ["Date,Description,Category,Amount (₹),Budget Set (₹),Total Spent (₹),Remaining Budget (₹)"];
-    const categorySummary = getCategorySummary();
-    const summaryRows = Object.entries(categorySummary).map(([category, amount]) =>
-      `,,${category},${amount},,,`
-    );
-    const dataRows = expenses.map((exp) =>
-      `${new Date(exp.date).toLocaleDateString()},${exp.description},${exp.category},${exp.amount},${currentBudget},${totalSpent},${remainingBudget > 0 ? remainingBudget : 0}`
-    );
-    const csvContent = [
-      ...header,
-      ...dataRows,
-      ...summaryRows,
-      `,,Total Budget,${currentBudget},,,`,
-      `,,Total Spent,${totalSpent},,,`,
-      `,,Remaining Budget,${remainingBudget > 0 ? remainingBudget : 0},,,`
-    ].join("\n");
+                    {/* Total Expenses Card */}
+                    <div className="p-5 rounded-2xl glass-panel relative overflow-hidden group hover:border-violet-500/30 transition-all">
+                        <div className="flex items-center justify-between mb-3">
+                            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                Total Outflow
+                            </span>
+                            <div className="w-8 h-8 rounded-lg bg-violet-500/10 text-violet-400 flex items-center justify-center">
+                                <FaArrowTrendUp size={14} />
+                            </div>
+                        </div>
+                        <div className="text-2xl font-black text-white font-mono tracking-tight">
+                            ₹{totalSpent.toLocaleString()}
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-2">
+                            Across {expenses.length} recorded {expenses.length === 1 ? "transaction" : "transactions"}
+                        </p>
+                    </div>
 
-    // Creates and triggers CSV download
-    const blob = new Blob([csvContent], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `Expense_Report_${viewType}_${username}_${currentDate}.csv`;
-    link.click();
-    window.URL.revokeObjectURL(url);
+                    {/* Remaining Balance Card */}
+                    <div className="p-5 rounded-2xl glass-panel relative overflow-hidden group hover:border-emerald-500/30 transition-all">
+                        <div className="flex items-center justify-between mb-3">
+                            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                Remaining Balance
+                            </span>
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                                isOverBudget ? "bg-rose-500/10 text-rose-400" : "bg-emerald-500/10 text-emerald-400"
+                            }`}>
+                                <FaArrowTrendDown size={14} />
+                            </div>
+                        </div>
+                        <div className={`text-2xl font-black font-mono tracking-tight ${
+                            isOverBudget ? "text-rose-400" : "text-emerald-400"
+                        }`}>
+                            ₹{(remainingBudget > 0 ? remainingBudget : 0).toLocaleString()}
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-2">
+                            {isOverBudget ? (
+                                <span className="text-rose-400 font-semibold">Exceeded by ₹{(totalSpent - currentBudget).toLocaleString()}</span>
+                            ) : currentBudget > 0 ? (
+                                <span className="text-emerald-400 font-semibold">{100 - spentPercent}% still available</span>
+                            ) : (
+                                "Set budget to track savings"
+                            )}
+                        </p>
+                    </div>
 
-    toast.success(`Downloaded ${viewType} expense report for ${username}!`, { ...toastOptions });
-  };
+                    {/* Financial Health Card */}
+                    <div className="p-5 rounded-2xl glass-panel relative overflow-hidden group hover:border-cyan-500/30 transition-all">
+                        <div className="flex items-center justify-between mb-3">
+                            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                Spend Health
+                            </span>
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                                isOverBudget ? "bg-rose-500/10 text-rose-400" : "bg-cyan-500/10 text-cyan-400"
+                            }`}>
+                                {isOverBudget ? <FaCircleExclamation size={14} /> : <FaShieldHeart size={14} />}
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className={`text-lg font-bold ${
+                                isOverBudget 
+                                    ? "text-rose-400" 
+                                    : spentPercent > 75 
+                                    ? "text-amber-400" 
+                                    : "text-emerald-400"
+                            }`}>
+                                {currentBudget === 0 
+                                    ? "Unconfigured" 
+                                    : isOverBudget 
+                                    ? "Limit Exceeded" 
+                                    : spentPercent > 75 
+                                    ? "Caution" 
+                                    : "Healthy Pace"}
+                            </span>
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-2">
+                            {currentBudget > 0 ? `${spentPercent}% of monthly limit consumed` : "Define monthly budget"}
+                        </p>
+                    </div>
+                </div>
 
-  // Toast notification configuration
-  const toastOptions = {
-    position: "top-right",
-    autoClose: 3000,
-    theme: "dark",
-    className: "navbar-poppins",
-  };
+                {/* Primary Bento Layout */}
+                <div className="space-y-8">
+                    {/* Row 1: Add Expense Form & Budget Controls */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        {/* Transaction Composer Form */}
+                        <div className="lg:col-span-7">
+                            <ExpenseForm addExpense={addExpense} disabled={!currentUser} />
+                        </div>
 
-  // Renders the main dashboard layout
-  return (
-    // Main container with full-height layout and gradient background
-    <div className="container mx-auto p-6 flex flex-col min-h-[calc(100vh-80px)] bg-gradient-to-br from-gray-900 via-gray-800 to-black navbar-Inter">
-      <div>
-        {/* Dashboard title with gradient text */}
-        <h2 className="text-4xl font-extrabold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
-          {/* 
-            Conditional Rendering for Title:
-            Displays the username if currentUser exists, otherwise shows "Guest".
-            Uses a ternary operator to check if currentUser is truthy.
-            If currentUser is present, it renders "Dashboard - {currentUser.username}".
-            If not, it renders "Dashboard - Guest", indicating an unauthenticated user.
-            This ensures the title reflects the user's login status clearly.
-          */}
-          Dashboard - {currentUser ? currentUser.username : "Guest"}
-        </h2>
+                        {/* Budget Configuration & Export Toolbar */}
+                        <div className="lg:col-span-5 space-y-6">
+                            <BudgetInput
+                                budget={budget}
+                                handleBudgetChange={handleBudgetChange}
+                                currentBudget={currentBudget}
+                                totalSpent={totalSpent}
+                                remainingBudget={remainingBudget}
+                                disabled={!currentUser}
+                            />
+                            <ReportDownload
+                                viewType={viewType}
+                                setViewType={setViewType}
+                                downloadReport={downloadReport}
+                                disabled={!currentUser}
+                            />
+                        </div>
+                    </div>
 
-        {/* Main content container with blurred background and border */}
-        <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl shadow-lg border border-white/5">
-          {/* Budget input section */}
-          <BudgetInput
-            budget={budget}
-            handleBudgetChange={handleBudgetChange}
-            currentBudget={currentBudget}
-            totalSpent={totalSpent}
-            remainingBudget={remainingBudget}
-            disabled={!currentUser} // Disables input if not logged in
-          />
+                    {/* Row 2: Analytics & Category Allocation */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        {/* Interactive Trends Chart */}
+                        <div className="lg:col-span-7">
+                            <ChartSection viewType={viewType} getChartData={getChartData} />
+                        </div>
 
-          {/* Expense form section */}
-          <ExpenseForm addExpense={addExpense} disabled={!currentUser} />
+                        {/* Category Summary Allocation */}
+                        <div className="lg:col-span-5">
+                            <SummarySection getCategorySummary={getCategorySummary} />
+                        </div>
+                    </div>
 
-          {/* Reset expenses button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }} // Scales up on hover
-            whileTap={{ scale: 0.95 }}   // Scales down on click
-            onClick={resetExpenses}
-            className="w-full mt-6 bg-gradient-to-r from-red-600 to-red-800 text-white p-3 rounded-xl hover:from-red-700 hover:to-red-900 transition-all shadow-md hover:shadow-lg"
-            disabled={!currentUser} // Disables button if not logged in
-          >
-            Reset All Expenses
-          </motion.button>
+                    {/* Row 3: Full-width Transaction History with Search */}
+                    <div>
+                        <ExpenseList expenses={expenses} />
+                    </div>
+                </div>
+            </main>
 
-          {/* Report download and view type switcher */}
-          <ReportDownload
-            viewType={viewType}
-            setViewType={setViewType}
-            downloadReport={downloadReport}
-            disabled={!currentUser}
-          />
-
-          {/* Chart section for expense trends */}
-          <ChartSection viewType={viewType} getChartData={getChartData} />
-
-          {/* Category summary section */}
-          <SummarySection getCategorySummary={getCategorySummary} />
-
-          {/* Expense list section */}
-          <ExpenseList expenses={expenses} />
+            {/* Premium Footer with 12hr AM/PM labeled time */}
+            <Footer currentUser={currentUser} />
         </div>
-      </div>
-
-      {/* Footer at the bottom */}
-      <Footer currentUser={currentUser} />
-    </div>
-  );
+    );
 };
 
-// Exports the Home component for use in the application
 export default Home;

@@ -182,7 +182,7 @@ function App() {
   // ------------------------- UI -------------------------
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col">
+    <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col font-['Plus_Jakarta_Sans',sans-serif]">
       {/* ToastContainer for displaying popup messages (notifications) */}
       <ToastContainer
         position="top-right"

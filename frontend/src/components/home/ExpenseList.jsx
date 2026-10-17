@@ -1,43 +1,113 @@
-import React from "react";
-import ExpenseCard from "../shared/ExpenseCard"; // Imports the ExpenseCard component to display individual expense details
+/* eslint-disable no-unused-vars */
+import React, { useState } from "react";
+import ExpenseCard from "../shared/ExpenseCard";
+import { FaMagnifyingGlass, FaListCheck, FaReceipt } from "react-icons/fa6";
 
-// ExpenseList component
-// Purpose: Displays a list of expenses in a responsive grid layout, rendering individual ExpenseCard components or a message if no expenses exist
-// Props:
-// - expenses: Array of expense objects, each containing details like id, amount, category, date, and description
 const ExpenseList = ({ expenses }) => {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("all");
+
+    // Extract unique categories present in actual expenses
+    const availableCategories = ["all", ...new Set(expenses.map(e => e.category).filter(Boolean))];
+
+    // Filter expenses based on search and category
+    const filteredExpenses = expenses.filter(exp => {
+        const matchesSearch = 
+            (exp.description && exp.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (exp.category && exp.category.toLowerCase().includes(searchTerm.toLowerCase()));
+        
+        const matchesCategory = selectedCategory === "all" || exp.category === selectedCategory;
+
+        return matchesSearch && matchesCategory;
+    });
+
+    const totalFilteredSum = filteredExpenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+
     return (
-        // Grid container for expenses with responsive columns
-        // 1 column on small screens, 2 on small-medium, 3 on large screens, with 6-unit gap
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-            {/* 
-                Conditional Rendering:
-                This ternary operator checks if the `expenses` array is empty to decide what to display.
-                If `expenses.length === 0`, no expenses are present, so we render a `<p>` element with a clear message: 
-                "No expenses yet. Add some!" This message spans the entire grid (`col-span-full`) for visibility, 
-                styled with a light gray color (`text-gray-400`) to be subtle yet readable.
-                The centered text ensures it looks clean and prominent in the grid.
-            */}
-            {expenses.length === 0 ? (
-                <p className="text-center col-span-full text-gray-400">
-                    No expenses yet. Add some!
-                </p>
+        <div className="p-6 rounded-2xl glass-panel">
+            {/* Header with Title and Search */}
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-inner">
+                        <FaListCheck size={16} />
+                    </div>
+                    <div>
+                        <h3 className="text-base font-bold text-white tracking-tight">
+                            Recent Expense History
+                        </h3>
+                        <p className="text-xs text-slate-400">
+                            Search and inspect individual transactions
+                        </p>
+                    </div>
+                </div>
+
+                {/* Search Bar & Total */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                            <FaMagnifyingGlass size={13} />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Filter transactions..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full sm:w-56 pl-8 pr-4 py-2 bg-slate-900/80 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                        />
+                    </div>
+
+                    <div className="flex items-center justify-between sm:justify-start gap-2 px-3 py-2 bg-slate-900/60 rounded-xl border border-white/5 text-xs text-slate-300">
+                        <span className="text-slate-400">Showing:</span>
+                        <span className="font-bold text-white">{filteredExpenses.length}</span>
+                        <span className="text-slate-500">|</span>
+                        <span className="font-mono text-emerald-400 font-bold">₹{totalFilteredSum.toLocaleString()}</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Category Quick Pills (if more than 1 category exists) */}
+            {availableCategories.length > 2 && (
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-3 mb-4 scrollbar-none">
+                    {availableCategories.map(cat => (
+                        <button
+                            key={cat}
+                            onClick={() => setSelectedCategory(cat)}
+                            className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+                                selectedCategory === cat
+                                    ? "bg-indigo-600 text-white shadow-sm shadow-indigo-600/30"
+                                    : "bg-slate-900/70 text-slate-400 hover:text-white hover:bg-slate-800"
+                            }`}
+                        >
+                            {cat === "all" ? "All Categories" : cat}
+                        </button>
+                    ))}
+                </div>
+            )}
+
+            {/* Transactions Grid */}
+            {filteredExpenses.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {filteredExpenses.map((expense) => (
+                        <ExpenseCard key={expense._id || expense.id || Math.random()} expense={expense} />
+                    ))}
+                </div>
             ) : (
-                /* 
-                    Conditional Rendering (Non-Empty Case):
-                    If `expenses.length > 0`, this block runs, rendering a list of ExpenseCard components.
-                    The `map` function iterates over the `expenses` array, creating an `ExpenseCard` for each expense.
-                    Each `ExpenseCard` gets a unique `key` prop (expense.id) to help React optimize DOM updates.
-                    The `expense` object is passed as a prop to `ExpenseCard` to display its details (e.g., amount, category, date).
-                    The grid layout ensures expenses are shown as cards, arranged responsively based on screen size.
-                */
-                expenses.map((expense) => (
-                    <ExpenseCard key={expense.id} expense={expense} />
-                ))
+                <div className="text-center py-12 rounded-xl border border-dashed border-white/10 bg-slate-900/30 flex flex-col items-center justify-center">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-slate-500 mb-3">
+                        <FaReceipt size={22} />
+                    </div>
+                    <p className="text-sm font-semibold text-slate-300">
+                        {expenses.length === 0 ? "No expenses recorded yet" : "No matching transactions found"}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1 max-w-sm">
+                        {expenses.length === 0 
+                            ? "Use the transaction composer above to record your first expense." 
+                            : "Try clearing your search query or choosing another category."}
+                    </p>
+                </div>
             )}
         </div>
     );
 };
 
-// Exports the ExpenseList component for use in the application
 export default ExpenseList;

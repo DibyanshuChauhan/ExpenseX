@@ -1,15 +1,10 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { FiEye, FiEyeOff } from "react-icons/fi"; // Icons for password visibility toggle
-import { toast } from "react-toastify"; // Notification for user feedback
+import { FiEye, FiEyeOff, FiUser, FiLock, FiArrowLeft, FiShield } from "react-icons/fi";
+import { toast } from "react-toastify";
+import logo from "../../../public/logo.svg";
 
-// ChangePassword component
-// Purpose: Provides a form for users to change their password, with fields for username, current password, new password, and confirm password
-// Props:
-// - onChangePassword: Function to handle the password change logic, called with username, current password, and new password
-// - setShowChangePassword: Function to toggle visibility of this component, typically to return to the login screen
 const ChangePassword = ({ onChangePassword, setShowChangePassword }) => {
-    // State to manage form inputs
-    // Stores username, current password, new password, and confirm password
     const [formData, setFormData] = useState({
         username: "",
         currentPassword: "",
@@ -17,175 +12,163 @@ const ChangePassword = ({ onChangePassword, setShowChangePassword }) => {
         confirmPassword: "",
     });
 
-    // State to control visibility of current password field (show/hide)
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-
-    // State to control visibility of new password field (show/hide)
     const [showNewPassword, setShowNewPassword] = useState(false);
-
-    // State to control visibility of confirm password field (show/hide)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    // Handles changes to form inputs
-    // Updates the formData state based on input field name and value
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value }); // Updates state with new input value
+        setFormData({ ...formData, [name]: value });
     };
 
-    // Handles form submission for password change
     const handleSubmit = (e) => {
-        e.preventDefault(); // Prevents page refresh on form submission
-        // Validates that new password matches confirm password
+        e.preventDefault();
         if (formData.newPassword !== formData.confirmPassword) {
             toast.error("New password and confirm password do not match!");
-            return; // Exits if passwords don't match, preventing submission
+            return;
         }
-        // Calls parent function to process password change
         onChangePassword(formData.username, formData.currentPassword, formData.newPassword);
-        // Hides the change password form, typically returning to login screen
         setShowChangePassword(false);
     };
 
     return (
-        // Full-screen container with centered form and gradient background
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-            {/* Form container with glassmorphism effect, hover animations, and max width */}
-            <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-2xl border border-white/20 w-full max-w-md transform transition-all hover:scale-105 hover:shadow-3xl">
-                {/* Form heading with gradient text */}
-                <h2 className="text-4xl font-extrabold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-600">
-                    Change Password
-                </h2>
+        <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#090d16] p-4">
+            <div className="absolute top-1/4 -right-20 w-80 h-80 bg-amber-600/20 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-1/4 -left-20 w-80 h-80 bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none" />
 
-                {/* Form for changing password, with spacing between fields */}
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Username input field */}
-                    <div className="relative">
-                        <input
-                            type="text"
-                            name="username"
-                            value={formData.username} // Controlled input bound to state
-                            onChange={handleChange} // Updates state on input change
-                            placeholder="Username"
-                            className="w-full p-4 bg-gray-800/50 border-0 rounded-xl focus:ring-2 focus:ring-amber-500 transition-all text-white placeholder-gray-400 focus:placeholder-transparent focus:outline-none"
-                            required // Ensures field is not empty
-                        />
-                        {/* Username icon for visual feedback */}
-                        <div className="absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-500">
-                            <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
+            <div className="glass-panel-elevated p-8 sm:p-10 rounded-3xl w-full max-w-md relative z-10 transition-all duration-300">
+                <div className="flex flex-col items-center text-center mb-6">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-500 to-indigo-500 p-1 flex items-center justify-center shadow-xl shadow-amber-600/30 mb-4">
+                        <img src={logo} alt="ExpenseX" className="w-8 h-8 object-contain drop-shadow" />
+                    </div>
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-2">
+                        <FiShield size={11} /> Security Settings
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white font-['Outfit']">
+                        Update Password
+                    </h2>
+                    <p className="text-xs text-slate-400 mt-1">
+                        Secure your ExpenseX account with a new password
+                    </p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-3.5">
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                            Username
+                        </label>
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <FiUser size={15} />
+                            </div>
+                            <input
+                                type="text"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                placeholder="Username"
+                                className="w-full pl-10 pr-4 py-2.5 bg-slate-900/80 border border-white/10 rounded-xl text-white placeholder-slate-500 text-sm focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all outline-none"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                            Current Password
+                        </label>
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <FiLock size={15} />
+                            </div>
+                            <input
+                                type={showCurrentPassword ? "text" : "password"}
+                                name="currentPassword"
+                                value={formData.currentPassword}
+                                onChange={handleChange}
+                                placeholder="Current password"
+                                className="w-full pl-10 pr-10 py-2.5 bg-slate-900/80 border border-white/10 rounded-xl text-white placeholder-slate-500 text-sm focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all outline-none"
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white transition-colors"
                             >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                />
-                            </svg>
+                                {showCurrentPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                            </button>
                         </div>
                     </div>
 
-                    {/* Current password input field with visibility toggle */}
-                    <div className="relative">
-                        <input
-                            type={showCurrentPassword ? "text" : "password"} // Toggles between text and password based on state
-                            name="currentPassword"
-                            value={formData.currentPassword} // Controlled input bound to state
-                            onChange={handleChange} // Updates state on input change
-                            placeholder="Current Password"
-                            className="w-full p-4 bg-gray-800/50 border-0 rounded-xl focus:ring-2 focus:ring-amber-500 transition-all text-white placeholder-gray-400 focus:placeholder-transparent focus:outline-none pr-12"
-                            required // Ensures field is not empty
-                        />
-                        {/* 
-                            Password visibility toggle button
-                            Renders an eye icon to show/hide the current password.
-                            If `showCurrentPassword` is `true`, displays `FiEyeOff` (hide password).
-                            If `false`, displays `FiEye` (show password).
-                            Toggles the `showCurrentPassword` state on click, changing the input type dynamically.
-                            Enhances user experience by allowing password visibility control.
-                        */}
-                        <div
-                            className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-400 hover:text-white transition-colors"
-                            onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                        >
-                            {showCurrentPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                            New Password
+                        </label>
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <FiLock size={15} />
+                            </div>
+                            <input
+                                type={showNewPassword ? "text" : "password"}
+                                name="newPassword"
+                                value={formData.newPassword}
+                                onChange={handleChange}
+                                placeholder="New password"
+                                className="w-full pl-10 pr-10 py-2.5 bg-slate-900/80 border border-white/10 rounded-xl text-white placeholder-slate-500 text-sm focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all outline-none"
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowNewPassword(!showNewPassword)}
+                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white transition-colors"
+                            >
+                                {showNewPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                            </button>
                         </div>
                     </div>
 
-                    {/* New password input field with visibility toggle */}
-                    <div className="relative">
-                        <input
-                            type={showNewPassword ? "text" : "password"} // Toggles between text and password based on state
-                            name="newPassword"
-                            value={formData.newPassword} // Controlled input bound to state
-                            onChange={handleChange} // Updates state on input change
-                            placeholder="New Password"
-                            className="w-full p-4 bg-gray-800/50 border-0 rounded-xl focus:ring-2 focus:ring-amber-500 transition-all text-white placeholder-gray-400 focus:placeholder-transparent focus:outline-none pr-12"
-                            required // Ensures field is not empty
-                        />
-                        {/* 
-                            Password visibility toggle button
-                            Renders an eye icon to show/hide the new password.
-                            If `showNewPassword` is `true`, displays `FiEyeOff` (hide password).
-                            If `false`, displays `FiEye` (show password).
-                            Toggles the `showNewPassword` state on click, changing the input type dynamically.
-                            Enhances user experience by allowing password visibility control.
-                        */}
-                        <div
-                            className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-400 hover:text-white transition-colors"
-                            onClick={() => setShowNewPassword(!showNewPassword)}
-                        >
-                            {showNewPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                            Confirm New Password
+                        </label>
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <FiLock size={15} />
+                            </div>
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                name="confirmPassword"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                placeholder="Confirm new password"
+                                className="w-full pl-10 pr-10 py-2.5 bg-slate-900/80 border border-white/10 rounded-xl text-white placeholder-slate-500 text-sm focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all outline-none"
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white transition-colors"
+                            >
+                                {showConfirmPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                            </button>
                         </div>
                     </div>
 
-                    {/* Confirm password input field with visibility toggle */}
-                    <div className="relative">
-                        <input
-                            type={showConfirmPassword ? "text" : "password"} // Toggles between text and password based on state
-                            name="confirmPassword"
-                            value={formData.confirmPassword} // Controlled input bound to state
-                            onChange={handleChange} // Updates state on input change
-                            placeholder="Confirm Password"
-                            className="w-full p-4 bg-gray-800/50 border-0 rounded-xl focus:ring-2 focus:ring-amber-500 transition-all text-white placeholder-gray-400 focus:placeholder-transparent focus:outline-none pr-12"
-                            required // Ensures field is not empty
-                        />
-                        {/* 
-                            Password visibility toggle button
-                            Renders an eye icon to show/hide the confirm password.
-                            If `showConfirmPassword` is `true`, displays `FiEyeOff` (hide password).
-                            If `false`, displays `FiEye` (show password).
-                            Toggles the `showConfirmPassword` state on click, changing the input type dynamically.
-                            Enhances user experience by allowing password visibility control.
-                        */}
-                        <div
-                            className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-400 hover:text-white transition-colors"
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        >
-                            {showConfirmPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
-                        </div>
-                    </div>
-
-                    {/* Update password submission button */}
                     <button
                         type="submit"
-                        className="w-full bg-gradient-to-r from-yellow-600 to-amber-700 text-white p-4 rounded-xl hover:from-yellow-700 hover:to-amber-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                        className="w-full mt-2 py-3 px-4 bg-gradient-to-r from-amber-600 via-orange-500 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-semibold text-sm rounded-xl shadow-lg shadow-amber-600/30 transition-all duration-200"
                     >
-                        Update Password
+                        Save New Password
                     </button>
 
-                    {/* Back to login link */}
-                    <div className="mt-6 text-center">
-                        {/* Button to return to the login screen */}
+                    <div className="pt-3 border-t border-white/5 text-center">
                         <button
+                            type="button"
                             onClick={() => setShowChangePassword(false)}
-                            className="text-yellow-400 hover:text-yellow-300 font-medium transition-colors underline-offset-2 hover:underline"
+                            className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-amber-400 font-semibold transition-colors"
                         >
-                            Back to Login
+                            <FiArrowLeft size={14} />
+                            <span>Back to Login</span>
                         </button>
                     </div>
                 </form>
@@ -194,5 +177,4 @@ const ChangePassword = ({ onChangePassword, setShowChangePassword }) => {
     );
 };
 
-// Exports the ChangePassword component for use in the application
 export default ChangePassword;

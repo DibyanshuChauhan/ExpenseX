@@ -1,49 +1,135 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
+import { FaWallet, FaArrowTrendUp, FaCircleExclamation } from "react-icons/fa6";
 
-// BudgetInput component
-// Purpose: Provides an input field for users to set their monthly budget and conditionally displays budget details (set budget, total spent, remaining budget)
-// Props:
-// - budget: The current value of the budget input field (controlled by parent component)
-// - handleBudgetChange: Function to handle changes to the budget input, updates the budget state
-// - currentBudget: The confirmed/set budget amount (numeric value, typically stored in localStorage or state)
-// - totalSpent: The total amount spent, calculated from expenses
-// - remainingBudget: The remaining budget (currentBudget - totalSpent)
-const BudgetInput = ({ budget, handleBudgetChange, currentBudget, totalSpent, remainingBudget }) => {
+const BudgetInput = ({
+    budget,
+    handleBudgetChange,
+    currentBudget,
+    totalSpent,
+    remainingBudget,
+    disabled = false
+}) => {
+    // Calculate percentage spent
+    const spentPercent = currentBudget > 0 
+        ? Math.min(Math.round((totalSpent / currentBudget) * 100), 100)
+        : 0;
+
+    const isOverBudget = currentBudget > 0 && totalSpent > currentBudget;
+
+    // Progress bar color based on usage
+    let progressColor = "bg-gradient-to-r from-emerald-500 to-teal-400";
+    if (spentPercent >= 90 || isOverBudget) {
+        progressColor = "bg-gradient-to-r from-rose-500 to-red-600";
+    } else if (spentPercent >= 75) {
+        progressColor = "bg-gradient-to-r from-amber-500 to-orange-400";
+    }
+
     return (
-        // Container div for the budget input and budget details, with bottom margin for spacing
-        <div className="mb-4">
-            {/* Input field for entering the monthly budget */}
-            {/* Type 'number' restricts input to numeric values */}
-            <input
-                type="number"
-                placeholder="Enter Monthly Budget (₹)" // Placeholder text with rupee symbol
-                value={budget} // Controlled input, bound to the budget prop
-                onChange={handleBudgetChange} // Calls handleBudgetChange on input change to update budget state
-                className="w-full p-3 bg-gray-700 border-none rounded-lg focus:ring-2 focus:ring-blue-500 transition text-white" // Tailwind CSS for styling: full width, padding, dark background, rounded, blue focus ring, white text
-            />
+        <div className="p-6 rounded-2xl glass-panel relative overflow-hidden transition-all duration-300">
+            {/* Subtle background glow */}
+            <div className="absolute -top-12 -right-12 w-36 h-36 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
 
-            {/* 
-                Display budget info only if budget is greater than 0
-                Alright, let’s dive into the conditional rendering here!
-                This is where we decide whether to show the budget details or not, and it’s pretty cool how it works.
-                We’re using the && operator to check if currentBudget is greater than 0. If it is—like if the user has actually set a budget—we render that <p> tag with the budget breakdown: the set budget, total spent, and remaining amount.
-                But if currentBudget is 0 or less (maybe the user hasn’t entered anything yet or it’s been reset), the whole thing gets skipped, and nothing shows up below the input.
-                This is super handy because it keeps the UI clean—why clutter the screen with zeros or nonsense if there’s no budget to show? Plus, it avoids confusing the user with negative numbers or empty stats.
-                It’s like saying, “Hey, only show this info when it makes sense!” This little check makes the component feel smart and user-friendly, only popping up the details when they’re actually meaningful.
-            */}
-            {/* CONDITIONAL RENDERING: Displays budget details only if currentBudget is greater than 0 */}
-            {/* Uses the && operator to render the <p> tag only when the condition is true */}
+            {/* Header with Title and Status */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-inner">
+                        <FaWallet size={18} />
+                    </div>
+                    <div>
+                        <h3 className="text-base font-bold text-white tracking-tight">
+                            Monthly Budget Target
+                        </h3>
+                        <p className="text-xs text-slate-400">
+                            Set your monthly limit to automatically monitor spend velocity
+                        </p>
+                    </div>
+                </div>
+
+                {currentBudget > 0 && (
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold self-start sm:self-auto ${
+                        isOverBudget
+                            ? "bg-rose-500/20 text-rose-300 border border-rose-500/30"
+                            : spentPercent > 75
+                            ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                            : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                    }`}>
+                        {isOverBudget ? (
+                            <>
+                                <FaCircleExclamation size={12} />
+                                Over Limit by ₹{(totalSpent - currentBudget).toLocaleString()}
+                            </>
+                        ) : (
+                            <>
+                                <FaArrowTrendUp size={12} />
+                                {spentPercent}% Utilized
+                            </>
+                        )}
+                    </span>
+                )}
+            </div>
+
+            {/* Budget Input Field */}
+            <div className="relative mb-5">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-bold text-lg">
+                    ₹
+                </div>
+                <input
+                    type="number"
+                    placeholder="Enter Monthly Budget (e.g. 50000)"
+                    value={budget}
+                    onChange={handleBudgetChange}
+                    disabled={disabled}
+                    className="w-full pl-9 pr-4 py-3.5 bg-slate-900/70 border border-white/10 rounded-xl text-white placeholder-slate-500 font-medium focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all text-base disabled:opacity-50"
+                />
+            </div>
+
+            {/* Progress Bar & Quick Stats */}
             {currentBudget > 0 && (
-                <p className="mt-2 text-sm text-gray-300">
-                    {/* Displays the set budget, total spent, and remaining budget */}
-                    Budget set: ₹{currentBudget} | Total Spent: ₹{totalSpent} |
-                    {/* Nested conditional rendering for remainingBudget: Shows 0 if negative to avoid confusing users */}
-                    Remaining: ₹{remainingBudget > 0 ? remainingBudget : 0}
-                </p>
+                <div className="space-y-3 pt-2">
+                    {/* Visual Progress Bar */}
+                    <div className="w-full bg-slate-900 rounded-full h-2.5 overflow-hidden border border-white/5 p-0.5">
+                        <div
+                            className={`h-full rounded-full transition-all duration-500 ${progressColor}`}
+                            style={{ width: `${Math.min((totalSpent / currentBudget) * 100, 100)}%` }}
+                        />
+                    </div>
+
+                    {/* Breakdown Pills */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                        <div className="p-2.5 rounded-xl bg-slate-900/60 border border-white/5">
+                            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5">
+                                Set Budget
+                            </span>
+                            <span className="text-sm font-bold text-white font-mono">
+                                ₹{currentBudget.toLocaleString()}
+                            </span>
+                        </div>
+
+                        <div className="p-2.5 rounded-xl bg-slate-900/60 border border-white/5">
+                            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5">
+                                Total Spent
+                            </span>
+                            <span className="text-sm font-bold text-indigo-300 font-mono">
+                                ₹{totalSpent.toLocaleString()}
+                            </span>
+                        </div>
+
+                        <div className="p-2.5 rounded-xl bg-slate-900/60 border border-white/5">
+                            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5">
+                                Available Balance
+                            </span>
+                            <span className={`text-sm font-bold font-mono ${
+                                remainingBudget < 0 ? "text-rose-400" : "text-emerald-400"
+                            }`}>
+                                ₹{(remainingBudget > 0 ? remainingBudget : 0).toLocaleString()}
+                            </span>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
 };
 
-// Exports the BudgetInput component for use in the application
 export default BudgetInput;

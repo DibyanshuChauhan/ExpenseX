@@ -1,88 +1,76 @@
-import React, { useState } from "react"; // React library for state management and component creation
+/* eslint-disable no-unused-vars */
+import React, { useState } from "react";
+import { FiUser, FiArrowLeft, FiKey } from "react-icons/fi";
+import logo from "../../../public/logo.svg";
 
-// ForgetPassword component
-// Purpose: Provides a form for users to initiate the password reset process by entering their username
-// Props:
-// - onForgetPassword: Function passed from the parent to handle the password reset logic with the provided username
-// - setShowForgetPassword: Function to toggle the visibility of this component, typically to return to the login screen
 const ForgetPassword = ({ onForgetPassword, setShowForgetPassword }) => {
-    // State to store the username entered by the user
     const [username, setUsername] = useState("");
 
-    // Handles changes to the username input field
-    // Updates the username state with the input value
     const handleChange = (e) => {
-        setUsername(e.target.value); // Updates username state with the new input value
+        setUsername(e.target.value);
     };
 
-    // Handles form submission to trigger the password reset action
     const handleSubmit = (e) => {
-        e.preventDefault(); // Prevents the default form submission behavior (page reload)
-        onForgetPassword(username); // Calls the parent function to process the password reset
+        e.preventDefault();
+        onForgetPassword(username);
     };
 
     return (
-        // Full-screen container with centered form and gradient background
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-            {/* Form container with glassmorphism effect, hover animations, and max width */}
-            <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-2xl border border-white/20 w-full max-w-md transform transition-all hover:scale-105 hover:shadow-3xl">
-                {/* Form heading with gradient text */}
-                <h2 className="text-4xl font-extrabold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-600">
-                    Forget Password
-                </h2>
+        <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#090d16] p-4">
+            <div className="absolute top-1/4 -right-20 w-80 h-80 bg-amber-600/20 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-1/4 -left-20 w-80 h-80 bg-orange-600/20 rounded-full blur-[120px] pointer-events-none" />
 
-                {/* Form for password reset, with spacing between elements */}
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Username input field */}
-                    <div className="relative">
-                        <input
-                            type="text"
-                            value={username} // Controlled input bound to username state
-                            onChange={handleChange} // Updates username state on input change
-                            placeholder="Enter Username"
-                            className="w-full p-4 bg-gray-800/50 border-0 rounded-xl focus:ring-2 focus:ring-amber-500 transition-all text-white placeholder-gray-400 focus:placeholder-transparent focus:outline-none"
-                            required // Ensures the field is not empty
-                        />
-                        {/* 
-                            Username icon for visual feedback
-                            Displays a user icon next to the input field to indicate it’s for username entry.
-                            Positioned absolutely on the right side, centered vertically with a transform, and styled with a gray color.
-                            Enhances user experience by providing a clear visual cue for the input purpose.
-                        */}
-                        <div className="absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-500">
-                            <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                />
-                            </svg>
+            <div className="glass-panel-elevated p-8 sm:p-10 rounded-3xl w-full max-w-md relative z-10 transition-all duration-300">
+                <div className="flex flex-col items-center text-center mb-8">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-500 p-1 flex items-center justify-center shadow-xl shadow-amber-600/30 mb-4">
+                        <img src={logo} alt="ExpenseX" className="w-8 h-8 object-contain drop-shadow" />
+                    </div>
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-2">
+                        <FiKey size={11} /> Password Recovery
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white font-['Outfit']">
+                        Reset Account Password
+                    </h2>
+                    <p className="text-xs text-slate-400 mt-1">
+                        Enter your registered username to reset your access
+                    </p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                            Account Username
+                        </label>
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <FiUser size={16} />
+                            </div>
+                            <input
+                                type="text"
+                                value={username}
+                                onChange={handleChange}
+                                placeholder="Enter your username"
+                                className="w-full pl-10 pr-4 py-3 bg-slate-900/80 border border-white/10 rounded-xl text-white placeholder-slate-500 text-sm focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all outline-none"
+                                required
+                            />
                         </div>
                     </div>
 
-                    {/* Reset password submission button */}
                     <button
                         type="submit"
-                        className="w-full bg-gradient-to-r from-yellow-600 to-amber-700 text-white p-4 rounded-xl hover:from-yellow-700 hover:to-amber-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                        className="w-full mt-2 py-3.5 px-4 bg-gradient-to-r from-amber-600 via-orange-500 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-semibold text-sm rounded-xl shadow-lg shadow-amber-600/30 transition-all duration-200"
                     >
                         Reset Password
                     </button>
 
-                    {/* Back to login link */}
-                    <div className="mt-6 text-center">
-                        {/* Button to return to the login screen */}
+                    <div className="pt-4 border-t border-white/5 text-center">
                         <button
+                            type="button"
                             onClick={() => setShowForgetPassword(false)}
-                            className="text-yellow-400 hover:text-yellow-300 font-medium transition-colors underline-offset-2 hover:underline"
+                            className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-amber-400 font-semibold transition-colors"
                         >
-                            Back to Login
+                            <FiArrowLeft size={14} />
+                            <span>Return to Login</span>
                         </button>
                     </div>
                 </form>
@@ -91,5 +79,4 @@ const ForgetPassword = ({ onForgetPassword, setShowForgetPassword }) => {
     );
 };
 
-// Exports the ForgetPassword component for use in the application
 export default ForgetPassword;
