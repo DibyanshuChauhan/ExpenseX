@@ -2,6 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const publicPath = path.join(__dirname, 'public');
 
 import { connectDB } from './src/config/db.js';
 import { User } from './src/models/User.js';
@@ -46,6 +53,21 @@ app.use('/api/feedback', feedbackRoutes);
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running smoothly with MongoDB' });
+});
+
+// Serve frontend static build from public folder
+app.use(express.static(publicPath));
+
+// Fallback to index.html for SPA routing on non-API GET requests
+app.get('{*path}', (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  const indexPath = path.join(publicPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
+  next();
 });
 
 // 404 Fallback for undefined API routes

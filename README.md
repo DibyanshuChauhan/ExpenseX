@@ -288,6 +288,33 @@ You can log in directly as `admin` to access the **Administrative Command Center
 
 ---
 
+## 🚀 Deploying to Render (Single Web Service)
+
+ExpenseX is configured to run as a **single unified web service** on [Render](https://render.com), saving compute costs by serving the production React frontend directly from the Express backend (`backend/public`).
+
+### Step-by-Step Render Setup:
+1. Log in to [Render Dashboard](https://dashboard.render.com/) and click **New +** > **Web Service**.
+2. Connect your GitHub repository (`DibyanshuChauhan/expensex`).
+3. Fill in the deployment settings:
+   - **Name:** `expensex` (or your preferred name)
+   - **Environment:** `Node`
+   - **Region:** Any region closest to your users (e.g. `Frankfurt`, `Oregon`, `Singapore`)
+   - **Branch:** `main` (or your current default branch)
+   - **Root Directory:** *(leave blank / repo root)*
+   - **Build Command:** `npm run build`
+   - **Start Command:** `npm start`
+4. In the **Environment Variables** section, add:
+   | Key | Value Example | Note |
+   |---|---|---|
+   | `MONGO_URI` | `mongodb+srv://<user>:<password>@cluster0.xxx.mongodb.net/expensex?retryWrites=true&w=majority` | Your MongoDB Atlas connection string |
+   | `JWT_SECRET` | `your_super_secret_jwt_random_key_here` | Secret key for JWT auth signing |
+   | `NODE_ENV` | `production` | Enables production optimizations |
+5. Click **Create Web Service**.
+
+> **How it works:** Render executes `npm run build`, which installs all dependencies and compiles the Vite React application straight into `backend/public`. The Express server then binds to Render's dynamic `$PORT`, seamlessly hosting both the static frontend UI and all `/api` endpoints with zero CORS configuration needed!
+
+---
+
 ## 🔒 Security & Data Integrity
 
 - **Password Encryption:** Zero plain-text passwords stored. All credentials hashed using `bcryptjs` with salt rounds.
