@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User.js';
 import { Expense } from '../models/Expense.js';
@@ -11,17 +10,6 @@ const generateToken = (user) => {
     process.env.JWT_SECRET || 'expensex_secret_default',
     { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
   );
-};
-
-// Helper for comparing plain password against either bcrypt hash or legacy base64
-const verifyPassword = async (plainPassword, storedPassword) => {
-  // If stored password looks like a bcrypt hash (starts with $2a$ or $2b$)
-  if (storedPassword && (storedPassword.startsWith('$2a$') || storedPassword.startsWith('$2b$'))) {
-    return await bcrypt.compare(plainPassword, storedPassword);
-  }
-  // Fallback for legacy base64 accounts during migration
-  const base64Input = Buffer.from(plainPassword).toString('base64');
-  return base64Input === storedPassword;
 };
 
 /**
@@ -38,13 +26,9 @@ export const register = async (req, res) => {
       return res.status(409).json({ success: false, message: 'Username already exists!' });
     }
 
-    // Salt and hash password with bcryptjs
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
     const newUser = await User.create({
       username,
-      password: hashedPassword,
+      password,
       isAdmin: false,
     });
 
@@ -77,16 +61,9 @@ export const login = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid username or password!' });
     }
 
-    const isMatch = await verifyPassword(password, user.password);
+    const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(401).json({ success: false, message: 'Invalid username or password!' });
-    }
-
-    // If user was using legacy base64, transparently upgrade their password to bcrypt
-    if (!user.password.startsWith('$2a$') && !user.password.startsWith('$2b$')) {
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
-      await user.save();
     }
 
     const token = generateToken(user);
@@ -104,7 +81,7 @@ export const login = async (req, res) => {
 };
 
 /**
- * Forgot password - resets to default123 (hashed with bcrypt)
+ * Forgot password - resets to default123 (hashed with bcrypt via pre-save)
  */
 export const forgotPassword = async (req, res) => {
   try {
@@ -118,8 +95,7 @@ export const forgotPassword = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Username not found!' });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash('default123', salt);
+    user.password = 'default123';
     await user.save();
 
     return res.status(200).json({
@@ -147,13 +123,12 @@ export const changePassword = async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found!' });
     }
 
-    const isMatch = await verifyPassword(currentPassword, user.password);
+    const isMatch = await user.comparePassword(currentPassword);
     if (!isMatch) {
       return res.status(400).json({ success: false, message: 'Current password is wrong!' });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(newPassword, salt);
+    user.password = newPassword;
     await user.save();
 
     return res.status(200).json({
@@ -193,12 +168,9 @@ export const createUserByAdmin = async (req, res) => {
       return res.status(409).json({ success: false, message: 'Username already exists!' });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
     const newUser = await User.create({
       username,
-      password: hashedPassword,
+      password,
       isAdmin: Boolean(isAdmin),
     });
 
@@ -212,6 +184,7 @@ export const createUserByAdmin = async (req, res) => {
     return res.status(500).json({ success: false, message: 'Server error creating user' });
   }
 };
+
 
 /**
  * Admin: Delete a user

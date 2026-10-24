@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import bcrypt from 'bcryptjs';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -27,11 +26,9 @@ connectDB().then(async () => {
   try {
     const adminExists = await User.findOne({ username: 'admin' });
     if (!adminExists) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash('admin123', salt);
       await User.create({
         username: 'admin',
-        password: hashedPassword,
+        password: 'admin123',
         isAdmin: true,
       });
       console.log('Default admin created with bcrypt (username: admin, password: admin123)');
