@@ -21,7 +21,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
-connectDB().then(async () => {
+connectDB().then(async (connected) => {
+  if (!connected) {
+    console.warn('⚠️ Server started without MongoDB connection. Database features will be unavailable until connected.');
+    return;
+  }
   // Ensure default admin user exists
   try {
     const adminExists = await User.findOne({ username: 'admin' });
